@@ -1,0 +1,54 @@
+@use "@styles/utils/" as *;
+.header-title {
+    font-weight: bold;
+}
+.header {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    @include flex-align-center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+
+    .backIcon {
+        margin-right: 0.5rem;
+        @include flex-align-center;
+
+        @include icon-size-under(321px, 24px);
+    }
+
+    .textAndControl {
+        flex: 1;
+        @include flex-center-twoside;
+
+        > div:first-child {
+            font-size: $font-size-md;
+        }
+
+        .inlineControl {
+            background-color: $background-color3;
+            border-radius: $border-radius-full;
+            padding: 4px 10px;
+            @include flex-align-center;
+            gap: 8px;
+            height: 30px;
+
+            .threedots {
+                @include flex-middle;
+                cursor: pointer;
+                @include icon-size(20px, 20px);
+            }
+
+            .divider {
+                font-size: 18px;
+                line-height: 1;
+                color: #ffffff5c;
+                height: "5px";
+                margin: 0 2px;
+            }
+
+            .rightCloseIcon {
+                @include flex-middle;
+                @include icon-size(25px, 25px);
+            }
+        }
+    }
+}

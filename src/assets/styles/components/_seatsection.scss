@@ -1,0 +1,15 @@
+@use "@styles/utils" as *;
+
+.seatsection {
+    @include flex-center-twoside;
+    border-radius: $border-radius-lg;
+    background-color: $background-color;
+    padding: 10px 50px 10px 10px;
+    margin: 1rem;
+
+    .seattype{
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+}

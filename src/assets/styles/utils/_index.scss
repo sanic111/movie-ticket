@@ -1,0 +1,9 @@
+//Tập hợp và forward toàn bộ biến SCSS từ nhiều file khác
+//$tên biến ko cần tiền tố
+@forward "color";
+@forward "typography";
+@forward "spacing";
+@forward "radius";
+
+// @include mix.flex-center;
+@forward "mixins";
