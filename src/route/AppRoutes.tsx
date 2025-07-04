@@ -25,7 +25,7 @@ const router = createBrowserRouter(
                 {
                     path: "purchase",
                     element: <PurchasePage />,
-                    handle: {title: "Thanh toán vé xem phim"},
+                    handle: {title: "Thanh toán vé"},
                 },
                 // Nếu dynamic cần loader:
                 // {

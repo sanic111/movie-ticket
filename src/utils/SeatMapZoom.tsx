@@ -49,12 +49,18 @@ const SeatMapZoom = forwardRef<SeatMapHandle, SeatMapZoomProps>(({seatRows, onSe
 
         const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
+        // Drag state
+        let isDragging = false;
+        let lastMousePos: {x: number; y: number} | null = null;
+
+        // Touch helpers
         const getDistance = (touches: TouchList) => {
             const dx = touches[0].clientX - touches[1].clientX;
             const dy = touches[0].clientY - touches[1].clientY;
             return Math.hypot(dx, dy);
         };
 
+        // Touch events
         const handleTouchStart = (e: TouchEvent) => {
             if (e.touches.length === 1) {
                 lastTouch.current = {
@@ -108,13 +114,42 @@ const SeatMapZoom = forwardRef<SeatMapHandle, SeatMapZoomProps>(({seatRows, onSe
             lastDistance.current = null;
         };
 
+        // Mouse drag
+        const handleMouseDown = (e: MouseEvent) => {
+            if (e.button !== 0) return;
+            isDragging = true;
+            lastMousePos = {x: e.clientX, y: e.clientY};
+        };
+
+        const handleMouseMove = (e: MouseEvent) => {
+            if (!isDragging || !lastMousePos) return;
+
+            const dx = e.clientX - lastMousePos.x;
+            const dy = e.clientY - lastMousePos.y;
+
+            const t = transformRef.current;
+            t.translate.x += dx;
+            t.translate.y += dy;
+
+            lastMousePos = {x: e.clientX, y: e.clientY};
+            applyTransform();
+        };
+
+        const handleMouseUp = () => {
+            isDragging = false;
+            lastMousePos = null;
+        };
+
+        // Wheel zoom
         const handleWheel = (e: WheelEvent) => {
             e.preventDefault();
+
             const rect = el.getBoundingClientRect();
             const mouseX = e.clientX - rect.left;
             const mouseY = e.clientY - rect.top;
 
             const t = transformRef.current;
+
             let scaleNew = t.scale * (1 - e.deltaY * 0.001);
             scaleNew = Math.max(0.5, Math.min(scaleNew, 3));
 
@@ -127,21 +162,30 @@ const SeatMapZoom = forwardRef<SeatMapHandle, SeatMapZoomProps>(({seatRows, onSe
             applyTransform();
         };
 
+        // Luôn lắng nghe wheel để test zoom lăn chuột
+        el.addEventListener("wheel", handleWheel, {passive: false});
+
         if (isTouchDevice) {
             el.addEventListener("touchstart", handleTouchStart, {passive: false});
             el.addEventListener("touchmove", handleTouchMove, {passive: false});
             el.addEventListener("touchend", handleTouchEnd);
         } else {
-            el.addEventListener("wheel", handleWheel, {passive: false});
+            el.addEventListener("mousedown", handleMouseDown);
+            window.addEventListener("mousemove", handleMouseMove);
+            window.addEventListener("mouseup", handleMouseUp);
         }
 
         return () => {
+            el.removeEventListener("wheel", handleWheel);
+
             if (isTouchDevice) {
                 el.removeEventListener("touchstart", handleTouchStart);
                 el.removeEventListener("touchmove", handleTouchMove);
                 el.removeEventListener("touchend", handleTouchEnd);
             } else {
-                el.removeEventListener("wheel", handleWheel);
+                el.removeEventListener("mousedown", handleMouseDown);
+                window.removeEventListener("mousemove", handleMouseMove);
+                window.removeEventListener("mouseup", handleMouseUp);
             }
         };
     }, []);
