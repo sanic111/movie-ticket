@@ -170,36 +170,37 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
                         <DropdownIcon />
                     </button>
                 </div>
-
-                <div
-                    className="dropdown-menu"
-                    ref={menuRef}
-                    style={{
-                        opacity: isOpen ? 1 : 0.3,
-                        pointerEvents: isOpen ? "auto" : "none",
-                        transition: "opacity 300ms ease",
-                    }}
-                >
-                    <ul className="seat-list" ref={listRef}>
-                        {selectedSeats.map((seat) => (
-                            <li key={seat.seatId} data-id={seat.seatId} className="seat-card">
-                                <div className="seat-box" style={{backgroundColor: seat.color}}>
-                                    <span className="seat-text">Ghế {seat.code}</span>
-                                    <span className="seat-price">
-                                        {(typeof seat.price === "string"
-                                            ? parseInt(seat.price)
-                                            : seat.price
-                                        ).toLocaleString()}{" "}
-                                        VND
-                                    </span>
-                                    <button className="remove-btn" onClick={() => onRemoveSeat(seat)}>
-                                        ×
-                                    </button>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                {selectedSeats.length > 0 && (
+                    <div
+                        className={`dropdown-menu${isOpen ? " open" : ""}`}
+                        ref={menuRef}
+                        style={{
+                            opacity: isOpen ? 1 : 0.3,
+                            pointerEvents: isOpen ? "auto" : "none",
+                            transition: "opacity 300ms ease",
+                        }}
+                    >
+                        <ul className="seat-list" ref={listRef}>
+                            {selectedSeats.map((seat) => (
+                                <li key={seat.seatId} data-id={seat.seatId} className="seat-card">
+                                    <div className="seat-box" style={{backgroundColor: seat.color}}>
+                                        <span className="seat-text">Ghế {seat.code}</span>
+                                        <span className="seat-price">
+                                            {(typeof seat.price === "string"
+                                                ? parseInt(seat.price)
+                                                : seat.price
+                                            ).toLocaleString()}{" "}
+                                            VND
+                                        </span>
+                                        <button className="remove-btn" onClick={() => onRemoveSeat(seat)}>
+                                            ×
+                                        </button>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
             </div>
         );
     }
