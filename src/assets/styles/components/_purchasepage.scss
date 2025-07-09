@@ -1,0 +1,241 @@
+@use "@styles/utils" as *;
+
+.purchase-page {
+    @include flex-column;
+    gap: 10px;
+    background-color: $background-color;
+    padding: 10px 0px 0px;
+}   
+
+// SECTION WRAPPER
+.section-wrapper {
+    width: 100%;
+    background-color: white;
+    padding: 12px;
+    box-sizing: border-box;
+}
+
+// SECTION TITLE CỨNG (THÔNG TIN THANH TOÁN)
+.section-title {
+    font-weight: bold;
+
+    margin: 8px 0 12px;
+}
+
+// DROPDOWN SECTION
+.dropdown-section {
+    overflow: hidden;
+    transition: max-height 400ms ease;
+
+    &.collapsed {
+        max-height: 48px; // Chỉ hiển thị tiêu đề
+        
+    }
+
+    &.expanded {
+        max-height: 400px; 
+    }
+
+    .content {
+        padding-top: 8px;
+    }
+
+    .dropdown-button {
+        @include flex-center-twoside;
+        width: 100%;
+        margin: 0.5rem 0 1rem;
+
+        .title {
+            font-weight: bold;
+            font-size: $font-size-base;
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+        }
+    }
+
+    .content {
+        padding-top: 8px;
+    }
+}
+
+/* FILM INFO SECTION */
+.info-section {
+    @include flex-column;
+    gap: 16px;
+}
+
+.info-row {
+    @include flex-center-twoside;
+
+    .label {
+        color: $text-color-muted;
+        font-size: $font-size-base;
+    }
+
+    .value {
+        text-align: right;
+        font-size: $font-size-base;
+        font-weight: $font-weight-bold;
+        color: #414141e8;
+    }
+}
+
+/* RECEIVER INFO SECTION */
+.form-section {
+    @include flex-column;
+    gap: 12px;
+
+    .form-row {
+        @include flex-column;
+        border-bottom: 1px solid;
+        border-color: $background-color3;
+        .label-section {
+            padding-bottom: 20px;
+        }
+        .form-label {
+            color: $text-color-muted;
+        }
+    }
+
+    .note-text {
+        font-size: 14px;
+        color: $text-color-muted;
+        margin-bottom: 5px;
+    }
+}
+
+/* PAYMENT SECTION */
+.payment-summary {
+    .payment-row {
+        @include flex-center-twoside;
+        margin-bottom: 8px;
+        color: $text-color-muted;
+    }
+
+    .seat-detail-list li {
+        @include flex-center-twoside;
+        margin-bottom: 4px;
+    }
+    .discount-value {
+        color: $promo-color-apply;
+        font-weight: $font-weight-bold;
+    }
+    .total-value {
+        font-weight: bold;
+        color: $primary-color;
+        font-size: $font-size-md;
+    }
+}
+
+/* PROMO SECTION */
+.promo-section {
+    .applied-voucher {
+        @include flex-center-twoside;
+    }
+    .promo-label {
+        font-weight: bold;
+        margin: 8px 0 12px;
+        font-size: $font-size-base;
+    }
+
+    .promo-list {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        @include hide-scrollbar;
+        margin: 10px;
+        padding: 5px;
+
+        .promo-card {
+            min-width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 0 6px $background-color3;
+            min-height: 130px;
+
+            // Thêm flex column
+            display: flex;
+            flex-direction: column;
+
+            .promo-title {
+                font-weight: bold;
+                margin-bottom: 4px;
+                @include overflow-hidden-2;
+                @include hide-scrollbar;
+                min-height: 50px;
+                font-size: $font-size-md;
+            }
+
+            .promo-desc {
+                color: $text-color-secondary;
+            }
+
+            .promo-unavailable {
+                color: red;
+            }
+
+            .expiry-and-option {
+                @include flex-center-twoside;
+                margin-top: auto;
+            }
+
+            .promo-expiry {
+                font-size: 12px;
+                color: $text-color-muted;
+                margin-bottom: 8px;
+            }
+
+            .promo-action {
+                color: $primary-color;
+                font-weight: $font-weight-bold;
+                background: none;
+                border: none;
+                padding: 0;
+                cursor: pointer;
+            }
+
+            &.promo-selected {
+                outline: 2px solid $promo-color-apply;
+            }
+        }
+    }
+}
+.promo-code {
+    margin-top: 10px;
+    background-color: $promo-color-apply;
+    color: white;
+    font-weight: bold;
+    padding: 5px;
+    font-size: $font-size-sm;
+    border-radius: $border-radius-full;
+}
+
+/* NOTES & AGREE SECTION */
+.note-list {
+    list-style: disc;
+    padding-left: 16px;
+    margin-bottom: 12px;
+    color: $text-color-muted;
+
+    li {
+        margin-bottom: 6px;
+    }
+}
+
+.agree-section {
+    @include flex-align-center;
+    // border: 1px solid #ccc;
+    // border-color: black;
+
+    .agree-label {
+        .agree-link {
+            color: $primary-color;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+}

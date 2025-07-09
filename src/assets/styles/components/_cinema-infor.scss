@@ -1,0 +1,13 @@
+@use "@styles/utils" as *;
+
+.cinema-infor {
+    @include flex-center-twoside;
+    padding: 1rem;
+}
+.left-block {
+    color: $text-color-muted;
+}
+.right-block {
+    text-align: end;
+    font-weight: $font-weight-bold;
+}

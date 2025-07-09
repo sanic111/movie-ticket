@@ -1,0 +1,172 @@
+@use "@styles/utils" as *;
+
+// Container và phần tổng giá
+.dropdown-and-price {
+    margin-top: 20px;
+
+    .choose-seat {
+        @include flex-center-twoside;
+           margin: 8px 0 8px 8px;
+        .empty-message {
+            font-size: 14px;
+            color: #999;
+         
+            max-width: 260px;
+        }
+    }
+}
+
+.total-price {
+    margin: 8px 0;
+    font-size: 16px;
+    color: #222;
+    @include flex-center-twoside;
+    padding-left: 20px;
+
+    .text {
+        .total {
+            color: $text-color-secondary;
+        }
+
+        .price {
+            color: $primary-color;
+            font-size: $font-size-lg;
+            font-weight: bold;
+        }
+    }
+}
+
+// Container cố định dưới cùng
+.dropdown-and-price-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 200;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    padding-right: 5px;
+
+    border-top-left-radius: $border-radius-lg;
+    border-top-right-radius: $border-radius-lg;
+}
+
+// Dropdown chứa danh sách ghế
+.selected-seats-dropdown-container {
+    position: fixed;
+    bottom: 40px;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    border-top-left-radius: $border-radius-lg;
+    border-top-right-radius: $border-radius-lg;
+
+    transform: translateY(calc(100% - 100px));
+    transition: transform 275ms ease;
+}
+
+.selected-seats-dropdown-container.open {
+    transform: translateY(0);
+}
+
+// Style riêng của dropdown ghế
+.selected-seats-dropdown {
+  &.open .dropdown-menu {
+    max-height: 200px;
+  }
+
+  .dropdown-menu {
+    padding: 0 0 24px 12px;
+   overflow: visible; 
+    max-height: none;  
+    transition: none;  }
+
+    .seat-list {
+        list-style: none;
+        padding: 20px 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .seat-card {
+        margin: 0.5rem;
+        position: relative;
+        width: fit-content;
+        transition: transform 300ms ease, opacity 300ms ease;
+        will-change: transform, opacity;
+
+        // Khi đang trong trạng thái bị remove
+        &.removing {
+            transform: translateY(-20%) scale(0.95);
+            opacity: 0;
+        }
+
+        // Hover effect nhẹ nhàng
+        &:hover {
+            transform: scale(1.02);
+            z-index: 10;
+        }
+    }
+
+    .seat-box {
+        position: relative;
+        background-color: #f5b035;
+        padding: 10px;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        color: #fff;
+        font-weight: 500;
+        font-size: 12px;
+        min-width: 105px;
+        min-height: 50px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .seat-text {
+        color: #fff;
+    }
+
+    .seat-price {
+        font-size: 10px;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    @include responsive-under(376px) {
+        .seat-box {
+            font-size: 10px;
+            min-width: 95px;
+            min-height: 45px;
+        }
+        .seat-price {
+            font-size: 9px;
+        }
+    }
+
+    .remove-btn {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: #fff;
+        border: none;
+        width: 20px;
+        height: 20px;
+        font-size: 14px;
+        line-height: 20px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-weight: bold;
+        color: #000;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+
+        &:hover {
+            background: #eee;
+        }
+    }
+}

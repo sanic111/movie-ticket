@@ -1,0 +1,14 @@
+//Áp dụng CSS toàn cục
+
+@use "@styles/utils" as *;
+
+body {
+  font-family: $font-family-sans;
+  font-size: $font-size-base;
+  font-weight: $font-weight-regular;
+  color: $text-color-primary;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+}

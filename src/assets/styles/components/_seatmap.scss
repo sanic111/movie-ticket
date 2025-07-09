@@ -1,0 +1,98 @@
+@use "@styles/utils" as *;
+
+.seat-map {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    justify-content: center;
+}
+
+.seat-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+.seat-item {
+    width: 20px;
+    height: 20px;
+    color: #fff;
+    font-size: 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    @include responsive-under(376px) {
+        width: 18px;
+        height: 18px;
+    }
+
+    // màu theo loại ghế
+    &.seat--type-normal {
+        background-color: $chair-color-normal;
+    }
+
+    &.seat--type-vip {
+        background-color: $chair-color-vip;
+    }
+
+    &.seat--type-pair {
+        background-color: $chair-color-pair;
+    }
+
+    &.seat--disabled {
+        background-color: $chair-color-normal;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    // viền khi chọn (không đổi màu)
+    &.seat--selected {
+        outline: 2px solid $primary-color;
+        // outline-offset: 2px;
+        background-color: #fff;
+        .seat-label {
+            display: none;
+        }
+    }
+
+    .seat-label {
+        z-index: 2;
+    }
+}
+.seat--highlighted {
+    animation: seatBounce 1.5s ease;
+}
+
+@keyframes seatBounce {
+    //   0% { transform: scale(1); }
+    //   30% { transform: scale(1.3); }
+    //   60% { transform: scale(0.9); }
+    //   100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+    15% {
+        transform: scale(1.4);
+    }
+    30% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.3);
+    }
+    70% {
+        transform: scale(1);
+    }
+    85% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+//   nảy 3 lần

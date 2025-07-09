@@ -1,0 +1,20 @@
+@use "@styles/utils" as *;
+
+.card {
+  @include flex-column;
+  background-color: #fff;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.338);
+  transition: box-shadow 0.2s ease;
+  margin: $spacing-medium;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  }
+
+  @include mobile {
+    flex-direction: column;
+  }
+  
+}
