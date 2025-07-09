@@ -99,6 +99,8 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             const container = containerRef.current;
             if (!container) return;
 
+            if (!isOpen && selectedSeats.length === 0) return;
+
             if (isOpen) {
                 container.classList.remove("open");
                 container.classList.add("closing");
@@ -110,7 +112,7 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
                 setOpen(true);
                 container.classList.add("open");
             }
-        }, [isOpen, containerRef]);
+        }, [isOpen, selectedSeats.length, containerRef]);
 
         // Effect 1: Khi mở dropdown → đặt max-height theo scrollHeight
         useEffect(() => {
@@ -170,37 +172,36 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
                         <DropdownIcon />
                     </button>
                 </div>
-                {selectedSeats.length > 0 && (
-                    <div
-                        className={`dropdown-menu${isOpen ? " open" : ""}`}
-                        ref={menuRef}
-                        style={{
-                            opacity: isOpen ? 1 : 0.3,
-                            pointerEvents: isOpen ? "auto" : "none",
-                            transition: "opacity 300ms ease",
-                        }}
-                    >
-                        <ul className="seat-list" ref={listRef}>
-                            {selectedSeats.map((seat) => (
-                                <li key={seat.seatId} data-id={seat.seatId} className="seat-card">
-                                    <div className="seat-box" style={{backgroundColor: seat.color}}>
-                                        <span className="seat-text">Ghế {seat.code}</span>
-                                        <span className="seat-price">
-                                            {(typeof seat.price === "string"
-                                                ? parseInt(seat.price)
-                                                : seat.price
-                                            ).toLocaleString()}{" "}
-                                            VND
-                                        </span>
-                                        <button className="remove-btn" onClick={() => onRemoveSeat(seat)}>
-                                            ×
-                                        </button>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
+
+                <div
+                    className="dropdown-menu"
+                    ref={menuRef}
+                    style={{
+                        opacity: isOpen ? 1 : 0.3,
+                        pointerEvents: isOpen ? "auto" : "none",
+                        transition: "opacity 300ms ease",
+                    }}
+                >
+                    <ul className="seat-list" ref={listRef}>
+                        {selectedSeats.map((seat) => (
+                            <li key={seat.seatId} data-id={seat.seatId} className="seat-card">
+                                <div className="seat-box" style={{backgroundColor: seat.color}}>
+                                    <span className="seat-text">Ghế {seat.code}</span>
+                                    <span className="seat-price">
+                                        {(typeof seat.price === "string"
+                                            ? parseInt(seat.price)
+                                            : seat.price
+                                        ).toLocaleString()}{" "}
+                                        VND
+                                    </span>
+                                    <button className="remove-btn" onClick={() => onRemoveSeat(seat)}>
+                                        ×
+                                    </button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         );
     }
