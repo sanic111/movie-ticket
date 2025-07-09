@@ -6,6 +6,12 @@
     background-color: $background-color;
     padding: 10px 0px 0px;
 }   
+.promo-section-wrapper{
+    width: 100%;
+    background-color: white;
+
+    box-sizing: border-box;
+}
 
 // SECTION WRAPPER
 .section-wrapper {
@@ -137,7 +143,7 @@
     }
     .promo-label {
         font-weight: bold;
-        margin: 8px 0 12px;
+        margin: 20px 0 12px 12px;
         font-size: $font-size-base;
     }
 
@@ -146,8 +152,8 @@
         gap: 16px;
         overflow-x: auto;
         @include hide-scrollbar;
-        margin: 10px;
-        padding: 5px;
+        padding: 15px;
+        ;
 
         .promo-card {
             min-width: 300px;

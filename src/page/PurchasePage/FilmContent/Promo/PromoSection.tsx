@@ -1,17 +1,29 @@
-import React, {useState, useEffect, useCallback} from "react";
+import React, {forwardRef, useImperativeHandle, useRef, useEffect, useState, useCallback} from "react";
 import {loadPromotions} from "@/service/dataService";
 
-interface PromoSectionProps {
-    onApply: (discount: number, code: string) => void;
+export interface PromoSectionHandle {
+    getDiscountInfo: () => {value: number; code: string};
 }
 
-export default function PromoSection({onApply}: PromoSectionProps) {
-    const [promos, setPromos] = useState<any[]>([]);
-    const [appliedCode, setAppliedCode] = useState<string>("");
+const PromoSection = forwardRef<PromoSectionHandle>((_, ref) => {
+    const promosRef = useRef<any[]>([]);
+    const [appliedCode, setAppliedCode] = useState("");
+    const [discount, setDiscount] = useState(0);
+
+    useImperativeHandle(ref, () => ({
+        getDiscountInfo: () => ({
+            value: discount,
+            code: appliedCode,
+        }),
+    }));
 
     useEffect(() => {
-        loadPromotions().then(setPromos);
+        loadPromotions().then((data) => {
+            promosRef.current = data;
+            forceRerender({}); // gọi để trigger render lại
+        });
     }, []);
+    const [, forceRerender] = useState({});
 
     const togglePromo = useCallback(
         (promo: any) => {
@@ -19,17 +31,16 @@ export default function PromoSection({onApply}: PromoSectionProps) {
                 alert("Xem chi tiết khuyến mãi");
                 return;
             }
+
             if (appliedCode === promo.voucherCode) {
-                // Hủy bỏ
                 setAppliedCode("");
-                onApply(0, "");
+                setDiscount(0);
             } else {
-                // Áp dụng
                 setAppliedCode(promo.voucherCode);
-                onApply(promo.discountValue, promo.voucherCode);
+                setDiscount(promo.discountValue);
             }
         },
-        [appliedCode, onApply]
+        [appliedCode]
     );
 
     return (
@@ -38,12 +49,12 @@ export default function PromoSection({onApply}: PromoSectionProps) {
                 <label className="promo-label">MÃ GIẢM GIÁ</label>
                 {appliedCode && (
                     <div className="promo-code">
-                      <strong>{appliedCode}</strong>
+                        <strong>{appliedCode}</strong>
                     </div>
                 )}
             </div>
             <div className="promo-list">
-                {promos.map((p: any) => (
+                {promosRef.current.map((p: any) => (
                     <div
                         key={p.voucherCode}
                         className={`promo-card ${appliedCode === p.voucherCode ? "promo-selected" : ""}`}
@@ -63,5 +74,6 @@ export default function PromoSection({onApply}: PromoSectionProps) {
             </div>
         </div>
     );
-}
+});
 
+export default PromoSection;

@@ -3,7 +3,7 @@ import {useNavigate, useLocation} from "react-router-dom";
 import FilmInfo from "@/page/PurchasePage/FilmContent/FilmInfo/FilmInfo";
 import ReceiverInfo from "@/page/PurchasePage/FilmContent/ReceiverInfo/ReceiverInfo";
 import PaymentSummary from "@/page/PurchasePage/FilmContent/Payment/PaymentSummary";
-import PromoSection from "@/page/PurchasePage/FilmContent/Promo/PromoSection";
+import PromoSection, {type PromoSectionHandle} from "@/page/PurchasePage/FilmContent/Promo/PromoSection";
 import NotesAgreeSection, {type NotesAgreeSectionHandle} from "@/page/PurchasePage/FilmContent/Note/NotesAgreeSection";
 
 import SectionWrapper from "@/utils/SectionWrapper";
@@ -17,7 +17,8 @@ export default function PurchasePage() {
     const location = useLocation();
     const {seats = []} = location.state || {};
     const [seatMap, setSeatMap] = useState<any>(null);
-
+    const promoRef = useRef<PromoSectionHandle>(null);
+    const discountInfo = promoRef.current?.getDiscountInfo() ?? {value: 0, code: ""};
     const agreeRef = useRef<NotesAgreeSectionHandle>(null);
 
     useEffect(() => {
@@ -58,12 +59,15 @@ export default function PurchasePage() {
                 <ReceiverInfo />
             </SectionWrapper>
             <SectionWrapper>
-                <PaymentSection seats={selectedSeats} />
+                <PaymentSection seats={selectedSeats} discount={discountInfo.value} />
             </SectionWrapper>
 
+            <div className="promo-section-wrapper">
+                <PromoSection ref={promoRef} />
+            </div>
             <SectionWrapper>
                 <ul className="note-list">
-                  <h3>*Lưu ý:</h3>
+                    <h3>*Lưu ý:</h3>
                     <li>Phim dành cho mọi lứa tuổi.</li>
                     <li>Vé đã mua không thể đổi hoặc trả lại.</li>
                     <li>
