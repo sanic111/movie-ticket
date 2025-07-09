@@ -35,36 +35,32 @@ const SeatMapZoom = forwardRef<SeatMapHandle, SeatMapZoomProps>(
       Math.min(Math.max(val, min), max);
 
     // tính transform + clamp
-  const applyTransform = () => {
-  const container = containerRef.current;
-  const content = contentRef.current;
-  if (!container || !content) return;
+    const applyTransform = () => {
+      const container = containerRef.current;
+      const content = contentRef.current;
+      if (!container || !content) return;
 
-  const { scale, translate } = transformRef.current;
+      const { scale, translate } = transformRef.current;
+      const { width: cw, height: ch } =
+        container.getBoundingClientRect();
+      const { width: bw, height: bh } =
+        content.getBoundingClientRect();
 
-  // Dùng kích thước gốc (chưa scale) của content
-  const bw = content.offsetWidth;
-  const bh = content.offsetHeight;
-  // Kích thước khung container hiện tại
-  const cw = container.clientWidth;
-  const ch = container.clientHeight;
+      // tổng kích thước sau scale
+      const w = bw * scale;
+      const h = bh * scale;
 
-  // tổng kích thước sau scale
-  const w = bw * scale;
-  const h = bh * scale;
+      // chỉ cho phép translate.x nằm trong [minX, maxX]
+      const minX = Math.min(0, cw - w);
+      const maxX = 0;
+      const minY = Math.min(0, ch - h);
+      const maxY = 0;
 
-  // clamp translate
-  const minX = Math.min(0, cw - w);
-  const maxX = 0;
-  const minY = Math.min(0, ch - h);
-  const maxY = 0;
+      translate.x = clamp(translate.x, minX, maxX);
+      translate.y = clamp(translate.y, minY, maxY);
 
-  translate.x = Math.min(Math.max(translate.x, minX), maxX);
-  translate.y = Math.min(Math.max(translate.y, minY), maxY);
-
-  content.style.transform =
-    `translate(${translate.x}px, ${translate.y}px) scale(${scale})`;
-};
+      content.style.transform = `translate(${translate.x}px, ${translate.y}px) scale(${scale})`;
+    };
 
     useImperativeHandle(ref, () => ({
       deselectSeat: (seatId: string) => {
