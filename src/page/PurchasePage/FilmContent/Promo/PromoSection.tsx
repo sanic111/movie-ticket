@@ -1,29 +1,20 @@
-import React, {forwardRef, useImperativeHandle, useRef, useEffect, useState, useCallback} from "react";
+import React, {useState, useEffect, useCallback, useRef} from "react";
 import {loadPromotions} from "@/service/dataService";
+import Icon from "@/assets/icons/Icon";
 
-export interface PromoSectionHandle {
-    getDiscountInfo: () => {value: number; code: string};
+interface PromoSectionProps {
+    onApply: (discount: number, code: string) => void;
 }
 
-const PromoSection = forwardRef<PromoSectionHandle>((_, ref) => {
-    const promosRef = useRef<any[]>([]);
-    const [appliedCode, setAppliedCode] = useState("");
-    const [discount, setDiscount] = useState(0);
-
-    useImperativeHandle(ref, () => ({
-        getDiscountInfo: () => ({
-            value: discount,
-            code: appliedCode,
-        }),
-    }));
+export default function PromoSection({onApply}: PromoSectionProps) {
+    const [promos, setPromos] = useState<any[]>([]);
+    const [appliedCode, setAppliedCode] = useState<string>("");
+    const promoListRef = useRef<HTMLDivElement>(null);
+    const promoRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
     useEffect(() => {
-        loadPromotions().then((data) => {
-            promosRef.current = data;
-            forceRerender({}); // gọi để trigger render lại
-        });
+        loadPromotions().then(setPromos);
     }, []);
-    const [, forceRerender] = useState({});
 
     const togglePromo = useCallback(
         (promo: any) => {
@@ -31,16 +22,17 @@ const PromoSection = forwardRef<PromoSectionHandle>((_, ref) => {
                 alert("Xem chi tiết khuyến mãi");
                 return;
             }
-
             if (appliedCode === promo.voucherCode) {
+                // Hủy bỏ
                 setAppliedCode("");
-                setDiscount(0);
+                onApply(0, "");
             } else {
+                // Áp dụng
                 setAppliedCode(promo.voucherCode);
-                setDiscount(promo.discountValue);
+                onApply(promo.discountValue, promo.voucherCode);
             }
         },
-        [appliedCode]
+        [appliedCode, onApply]
     );
 
     return (
@@ -49,14 +41,37 @@ const PromoSection = forwardRef<PromoSectionHandle>((_, ref) => {
                 <label className="promo-label">MÃ GIẢM GIÁ</label>
                 {appliedCode && (
                     <div className="promo-code">
-                        <strong>{appliedCode}</strong>
+                        <span
+                            style={{marginRight: "8px", cursor: "pointer"}}
+                            onClick={() => {
+                                const el = promoRefs.current[appliedCode];
+                                const container = promoListRef.current;
+                                if (el && container) {
+                                    const offset = el.offsetLeft - container.offsetWidth / 2 + el.offsetWidth / 2;
+                                    container.scrollTo({left: offset, behavior: "smooth"});
+                                }
+                            }}
+                        >
+                            <strong>{appliedCode}</strong>
+                        </span>
+                        <div className="divider">|</div>
+                        <Icon
+                            name="close"
+                            onClick={() => {
+                                setAppliedCode("");
+                                onApply(0, "");
+                            }}
+                        />
                     </div>
                 )}
             </div>
-            <div className="promo-list">
-                {promosRef.current.map((p: any) => (
+            <div className="promo-list" ref={promoListRef}>
+                {promos.map((p: any) => (
                     <div
                         key={p.voucherCode}
+                        ref={(el) => {
+                            promoRefs.current[p.voucherCode] = el;
+                        }}
                         className={`promo-card ${appliedCode === p.voucherCode ? "promo-selected" : ""}`}
                     >
                         <p className="promo-title">{p.promotionTitle}</p>
@@ -74,6 +89,4 @@ const PromoSection = forwardRef<PromoSectionHandle>((_, ref) => {
             </div>
         </div>
     );
-});
-
-export default PromoSection;
+}

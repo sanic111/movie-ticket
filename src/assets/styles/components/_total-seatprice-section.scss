@@ -1,5 +1,12 @@
 @use "@styles/utils" as *;
-
+.screen-seatmap-icon-container{
+    @include responsive-under(376px) {
+svg,
+    img {
+        width: 241px;
+    }
+}
+}
 // Container và phần tổng giá
 .dropdown-and-price {
     margin-top: 20px;

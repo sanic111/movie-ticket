@@ -30,11 +30,14 @@ const icons = {
 export default function Icon({
   name,
   className,
+  style,
+  onClick,
 }: Readonly<{
   name: IconName;
   className?: string;
   style?: React.CSSProperties;
+  onClick?: () => void;
 }>) {
   const IconComponent = icons[name];
-  return <IconComponent className={className} />;
+  return <IconComponent className={className} style={style} onClick={onClick} />;
 }

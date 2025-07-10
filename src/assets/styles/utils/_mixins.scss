@@ -1,37 +1,48 @@
 // 1. FLEXBOX TOOLKIT
 
+//kĩ thuật tràn viền (break out layout)
+
+@mixin breakout-layout {
+    position: relative;
+    left: 50%;
+    right: 50%;
+    width: 100vw;
+    margin-left: -50vw;
+    // position: relative;
+    // left: calc(50% - 50vw);
+    // right: calc(50% - 50vw);
+    // width: 100vw;
+}
 //cho phép xuống dòng
 @mixin downstream-allow {
-  white-space: normal;
-  word-break: break-word;
+    white-space: normal;
+    word-break: break-word;
 }
-//ẩn dài quá, chỉ trên 1 dòng 
+//ẩn dài quá, chỉ trên 1 dòng
 @mixin overflow-hidden {
-  white-space: nowrap;
-  overflow-x: auto;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow-x: auto;
+    text-overflow: ellipsis;
 }
 @mixin overflow-hidden-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2; // Số dòng muốn hiển thị
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; // Số dòng muốn hiển thị
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 //đảo ngược màu
 @mixin invert-color {
-  filter: brightness(0) invert(1);
+    filter: brightness(0) invert(1);
 }
 // ẩn thanh cuộn
 @mixin hide-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE & Edge */
-  &::-webkit-scrollbar {
-    display: none; /* Chrome, Safari */
-  }
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE & Edge */
+    &::-webkit-scrollbar {
+        display: none; /* Chrome, Safari */
+    }
 }
-
-
 
 //7 cái
 //CÚ PHÁP:
@@ -42,58 +53,58 @@
 
 //căn chỉnh theo cột ngang
 @mixin flex-center-twoside {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 @mixin flex-middle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 @mixin flex-align-center {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 @mixin flex-justify-center {
-  display: flex;
-  justify-content: center;
+    display: flex;
+    justify-content: center;
 }
 
 @mixin flex-justify-between {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 }
 
 // căn chỉnh theo cột dọc
 
 @mixin flex-column {
-  display: flex;
-  flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 @mixin flex-middle-column {
-  @include flex-middle;
-  flex-direction: column;
+    @include flex-middle;
+    flex-direction: column;
 }
 
 @mixin flex-center-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 @mixin flex-left-column {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 @mixin flex-right-column {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
 //------------------------------
@@ -124,87 +135,87 @@ $desktop: 1280;
 
 // Basic named breakpoints
 @mixin mobile {
-  @media (max-width: #{$mobile}px) {
-    @content;
-  }
+    @media (max-width: #{$mobile}px) {
+        @content;
+    }
 }
 
 @mixin tablet {
-  @media (min-width: #{$tablet}px) {
-    @content;
-  }
+    @media (min-width: #{$tablet}px) {
+        @content;
+    }
 }
 
 @mixin large {
-  @media (min-width: #{$large}px) {
-    @content;
-  }
+    @media (min-width: #{$large}px) {
+        @content;
+    }
 }
 
 @mixin desktop {
-  @media (min-width: #{$desktop}px) {
-    @content;
-  }
+    @media (min-width: #{$desktop}px) {
+        @content;
+    }
 }
 
 // Range-based mixins
 //theo khoảng (range)
 @mixin responsive-between($min, $max) {
-  @media (min-width: $min) and (max-width: $max) {
-    @content;
-  }
+    @media (min-width: $min) and (max-width: $max) {
+        @content;
+    }
 }
 
 //tối thiểu (min-width)
 @mixin responsive-beyonce($min) {
-  @media (min-width: $min) {
-    @content;
-  }
+    @media (min-width: $min) {
+        @content;
+    }
 }
 //tối đa (max-width)
 @mixin responsive-under($max) {
-  @media (max-width: $max) {
-    @content;
-  }
+    @media (max-width: $max) {
+        @content;
+    }
 }
 //chỉnh kích cỡ icon
 @mixin icon-size($width, $height) {
-  svg,
-  img {
-    width: $width;
-    height: $height;
-  }
+    svg,
+    img {
+        width: $width;
+        height: $height;
+    }
 }
 // respond chỉnh cỡ icon
 // Kích cỡ icon theo breakpoint tối đa
 @mixin icon-size-under($max-width, $size) {
-  @include responsive-under($max-width) {
-    svg,
-    img {
-      width: $size;
-      height: $size;
+    @include responsive-under($max-width) {
+        svg,
+        img {
+            width: $size;
+            height: $size;
+        }
     }
-  }
 }
 
 // Kích cỡ icon theo breakpoint tối thiểu
 @mixin icon-size-beyonce($min-width, $size) {
-  @include responsive-beyonce($min-width) {
-    svg,
-    img {
-      width: $size;
-      height: $size;
+    @include responsive-beyonce($min-width) {
+        svg,
+        img {
+            width: $size;
+            height: $size;
+        }
     }
-  }
 }
 
 // Kích cỡ icon trong khoảng cụ thể
 @mixin icon-size-between($min-width, $max-width, $size) {
-  @include responsive-between($min-width, $max-width) {
-    svg,
-    img {
-      width: $size;
-      height: $size;
+    @include responsive-between($min-width, $max-width) {
+        svg,
+        img {
+            width: $size;
+            height: $size;
+        }
     }
-  }
 }

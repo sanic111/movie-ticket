@@ -83,7 +83,9 @@
             <div className="seat-page">
                 <SeatLegend />
                 <CinemaInformation />
-                <ScreenSeatMapIcon />
+                <div className="screen-seatmap-icon-container">
+                    <ScreenSeatMapIcon />
+                </div>
                 <SeatMapZoom ref={seatMapRef} seatRows={seatRowsRef.current} onSeatClick={handleSeatClick} />
 
                 <div className="selected-seats-dropdown-container" ref={selectedContainerRef}>
