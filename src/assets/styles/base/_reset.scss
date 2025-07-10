@@ -81,11 +81,12 @@ html,
 body {
   height: 100%;
 }
+//reset scss xóa bỏ các CSS mặc định của trình duyệt (margin, padding, border, font-size, v.v.)
 /* Box sizing border-box cho tất cả các phần tử */
 *,
 *::before,
 *::after {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 /* Xóa margin mặc định */
@@ -101,26 +102,26 @@ blockquote,
 figure,
 dl,
 dd {
-  margin: 0;
+    margin: 0;
 }
 
 /* Xóa padding mặc định */
 ul,
 ol {
-  padding: 0;
-  margin: 0;
+    padding: 0;
+    margin: 0;
 }
 
 /* Xóa list style mặc định */
 ul,
 ol {
-  list-style: none;
+    list-style: none;
 }
 
 /* Xóa default link styling */
 a {
-  text-decoration: none;
-  color: inherit;
+    text-decoration: none;
+    color: inherit;
 }
 
 /* Reset thẻ form */
@@ -128,38 +129,120 @@ input,
 button,
 textarea,
 select {
-  font: inherit;
-  margin: 0;
-  padding: 0;
-  border: none;
-  background: none;
-  color: inherit;
+    font: inherit;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
 }
 
 /* Đảm bảo button không có border & cursor rõ ràng */
 button {
-  cursor: pointer;
-  background-color: transparent;
+    cursor: pointer;
+    background-color: transparent;
 }
 
 /* Hình ảnh không bị tràn ra ngoài */
 img,
 picture {
-  max-width: 100%;
-  display: block;
+    max-width: 100%;
+    display: block;
 }
 
 /* Bỏ inherit line-height giúp tránh bug */
 html {
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  scroll-behavior: smooth;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
 }
 
 /* Đảm bảo 100% chiều cao cho layout nếu dùng flexbox/grid */
 html,
 body {
-  height: 100%;
+    height: 100%;
+}
+/* Box sizing border-box cho tất cả các phần tử */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Xóa margin mặc định */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+figure,
+dl,
+dd {
+    margin: 0;
+}
+
+/* Xóa padding mặc định */
+ul,
+ol {
+    padding: 0;
+    margin: 0;
+}
+
+/* Xóa list style mặc định */
+ul,
+ol {
+    list-style: none;
+}
+
+/* Xóa default link styling */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Reset thẻ form */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
+}
+
+/* Đảm bảo button không có border & cursor rõ ràng */
+button {
+    cursor: pointer;
+    background-color: transparent;
+}
+
+/* Hình ảnh không bị tràn ra ngoài */
+img,
+picture {
+    max-width: 100%;
+    display: block;
+}
+
+/* Bỏ inherit line-height giúp tránh bug */
+html {
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+}
+
+/* Đảm bảo 100% chiều cao cho layout nếu dùng flexbox/grid */
+html,
+body {
+    height: 100%;
 }
