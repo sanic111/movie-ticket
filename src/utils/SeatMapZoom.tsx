@@ -202,7 +202,7 @@ const SeatMapZoom = forwardRef<SeatMapHandle, SeatMapZoomProps>(({seatRows, onSe
                 justifyContent: "center",
                 boxSizing: "border-box",
                 padding: "10px",
-                marginTop: "10px",
+                margin: "10px 0",
             }}
         >
             <div
