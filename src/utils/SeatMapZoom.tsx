@@ -210,6 +210,7 @@ const SeatMapZoom = forwardRef<SeatMapHandle, SeatMapZoomProps>(({seatRows, onSe
                 style={{
                     transform: "translate(0px, 0px) scale(1)",
                     transformOrigin: "0 0",
+                        willChange: "transform",
                 }}
             >
                 <SeatMap ref={seatMapRef} seatRows={seatRows} onSeatClick={onSeatClick} />
