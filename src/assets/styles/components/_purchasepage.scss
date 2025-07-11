@@ -96,10 +96,10 @@
         }
         .form-label {
             color: $text-color-muted;
-          @include flex-column;  
+            @include flex-column;
         }
-        .form-input{
-            width: 100%;;
+        .form-input {
+            width: 100%;
         }
     }
 
@@ -217,6 +217,15 @@
     padding: 5px 5px 5px 10px;
     font-size: $font-size-sm;
     border-radius: $border-radius-full;
+}
+.promo-empty {
+    color: #999;
+    font-size: $font-size-sm;
+    margin-top: 5px;
+    background-color: $background-color;
+    padding: 4px 8px;
+    border-radius: $border-radius-full;
+    @include flex-align-center;
 }
 
 /* NOTES & AGREE SECTION */
