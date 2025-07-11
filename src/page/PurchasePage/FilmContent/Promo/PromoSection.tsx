@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useCallback, useRef} from "react";
 import {loadPromotions} from "@/service/dataService";
 import Icon from "@/assets/icons/Icon";
-
+import { IoMdPricetag } from "react-icons/io";
 interface PromoSectionProps {
     onApply: (discount: number, code: string) => void;
 }
@@ -39,7 +39,7 @@ export default function PromoSection({onApply}: PromoSectionProps) {
         <div className="promo-section">
             <div className="applied-voucher">
                 <label className="promo-label">MÃ GIẢM GIÁ</label>
-                {appliedCode && (
+                {appliedCode ? (
                     <div className="promo-code">
                         <span
                             style={{marginRight: "8px", cursor: "pointer"}}
@@ -63,8 +63,14 @@ export default function PromoSection({onApply}: PromoSectionProps) {
                             }}
                         />
                     </div>
+                ) : (
+                    <div className="promo-empty">
+                        <IoMdPricetag />
+                        <p style={{ marginLeft: "4px" }}>Nhập hoặc chọn mã</p>
+                    </div>
                 )}
             </div>
+
             <div className="promo-list" ref={promoListRef}>
                 {promos.map((p: any) => (
                     <div

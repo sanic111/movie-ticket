@@ -83,36 +83,38 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             }, 0);
         }, [selectedSeats, isOpen]);
 
-        // Gán class open/close vào container
+        // Gán visibility cho container
         useEffect(() => {
             const container = containerRef.current;
             if (!container) return;
 
-            if (isOpen && selectedSeats.length > 0) {
-                container.classList.add("open");
+            if (selectedSeats.length > 0) {
+                container.classList.add("visible");
             } else {
-                container.classList.remove("open");
+                container.classList.remove("visible");
+                setOpen(false);
             }
-        }, [isOpen, selectedSeats.length]);
+        }, [selectedSeats.length]);
 
-        const toggleOpen = useCallback(() => {
+        //gán open
+        useEffect(() => {
             const container = containerRef.current;
             if (!container) return;
 
-            if (!isOpen && selectedSeats.length === 0) return;
-
             if (isOpen) {
-                container.classList.remove("open");
-                container.classList.add("closing");
-                setTimeout(() => {
-                    container.classList.remove("closing");
-                    setOpen(false);
-                }, 300);
-            } else {
-                setOpen(true);
                 container.classList.add("open");
+            } else {
+                container.classList.remove("open");
             }
-        }, [isOpen, selectedSeats.length, containerRef]);
+        }, [isOpen]);
+const toggleOpen = useCallback(() => {
+  if (!containerRef.current) return;
+
+  if (!isOpen && selectedSeats.length === 0) return;
+
+  setOpen(!isOpen);
+}, [isOpen, selectedSeats.length, containerRef]);
+
 
         // Effect 1: Khi mở dropdown → đặt max-height theo scrollHeight
         useEffect(() => {
@@ -120,7 +122,7 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             if (!menu) return;
 
             menu.style.overflow = "hidden";
-            menu.style.transition = "max-height 400ms ease";
+            menu.style.transition = "max-height 275ms ease";
 
             const id = requestAnimationFrame(() => {
                 const maxHeight = isOpen ? menu.scrollHeight : 0;

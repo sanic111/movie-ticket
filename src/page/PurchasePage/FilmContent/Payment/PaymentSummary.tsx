@@ -7,10 +7,7 @@ interface PaymentSummaryProps {
 }
 
 export default function PaymentSummary({seats, discount = 0}: PaymentSummaryProps) {
-    const total = useMemo(
-        () => seats.reduce((sum, s) => sum + Number(s.price), 0),
-        [seats]
-    );
+    const total = useMemo(() => seats.reduce((sum, s) => sum + Number(s.price), 0), [seats]);
 
     const totalAfterDiscount = Math.max(total - discount, 0);
 
@@ -30,6 +27,8 @@ export default function PaymentSummary({seats, discount = 0}: PaymentSummaryProp
                 <span>Tổng thanh toán</span>
                 <span className="total-value">{totalAfterDiscount.toLocaleString()} VND</span>
             </div>
+
+            <span style={{display: "flex", justifyContent: "flex-end", marginBottom: "20px", color: "#999"}}>Đã bao gồm VAT</span>
         </div>
     );
 }
