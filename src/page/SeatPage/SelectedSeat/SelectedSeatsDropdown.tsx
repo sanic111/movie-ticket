@@ -1,5 +1,12 @@
-import React, {forwardRef, useImperativeHandle, useState, useRef, useEffect, useCallback} from "react";
-import type {SeatType} from "@/data/seat";
+import React, {
+    forwardRef,
+    useImperativeHandle,
+    useState,
+    useRef,
+    useEffect,
+    useCallback,
+} from "react";
+import type { SeatType } from "@/data/seat";
 import Icon from "@/assets/icons/Icon";
 
 export interface SelectedSeatsDropdownHandle {
@@ -13,7 +20,7 @@ interface SelectedSeatsDropdownProps {
 }
 
 const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSeatsDropdownProps>(
-    ({selectedSeatsRef, onRemoveSeat, containerRef}, ref) => {
+    ({ selectedSeatsRef, onRemoveSeat, containerRef }, ref) => {
         const [selectedSeats, setSelectedSeats] = useState<SeatType[]>([]);
         const [isOpen, setOpen] = useState(false);
 
@@ -34,18 +41,18 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             positionsRef.current = firstPositions;
 
             const sorted = [...selectedSeatsRef.current].sort((a, b) =>
-                a.code.localeCompare(b.code, "vi", {numeric: true})
+                a.code.localeCompare(b.code, "vi", { numeric: true })
             );
             setSelectedSeats(sorted);
         }, [selectedSeatsRef]);
 
-        useImperativeHandle(ref, () => ({updateFromRef}));
+        useImperativeHandle(ref, () => ({ updateFromRef }));
 
         useEffect(() => {
             updateFromRef();
         }, [updateFromRef]);
 
-        // FLIP animation khi danh sách thay đổi
+        // FLIP animation
         useEffect(() => {
             if (!isOpen || !listRef.current) return;
 
@@ -83,40 +90,54 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             }, 0);
         }, [selectedSeats, isOpen]);
 
-        // Gán visibility cho container
+        // Gán visible và delay open
         useEffect(() => {
             const container = containerRef.current;
             if (!container) return;
 
             if (selectedSeats.length > 0) {
                 container.classList.add("visible");
+
+                // Delay setOpen để trình duyệt kịp layout visible
+                requestAnimationFrame(() => {
+                    setOpen(true);
+                });
             } else {
                 container.classList.remove("visible");
-                setOpen(false);
+                if (isOpen) {
+                    setOpen(false);
+                }
             }
         }, [selectedSeats.length]);
 
-        //gán open
+        // Gán open sau khi visible được apply
         useEffect(() => {
             const container = containerRef.current;
             if (!container) return;
 
-            if (isOpen) {
-                container.classList.add("open");
-            } else {
+            if (!container.classList.contains("visible")) {
                 container.classList.remove("open");
+                return;
             }
+
+            const id = requestAnimationFrame(() => {
+                if (isOpen) {
+                    container.classList.add("open");
+                } else {
+                    container.classList.remove("open");
+                }
+            });
+
+            return () => cancelAnimationFrame(id);
         }, [isOpen]);
-const toggleOpen = useCallback(() => {
-  if (!containerRef.current) return;
 
-  if (!isOpen && selectedSeats.length === 0) return;
+        const toggleOpen = useCallback(() => {
+            if (!containerRef.current) return;
+            if (!selectedSeats.length) return;
+            setOpen(!isOpen);
+        }, [isOpen, selectedSeats.length, containerRef]);
 
-  setOpen(!isOpen);
-}, [isOpen, selectedSeats.length, containerRef]);
-
-
-        // Effect 1: Khi mở dropdown → đặt max-height theo scrollHeight
+        // Transition max-height
         useEffect(() => {
             const menu = menuRef.current;
             if (!menu) return;
@@ -132,7 +153,7 @@ const toggleOpen = useCallback(() => {
             return () => cancelAnimationFrame(id);
         }, [isOpen]);
 
-        // Effect 2: Khi danh sách ghế thay đổi (chỉ khi dropdown đang mở)
+        // Resize when list changes
         useEffect(() => {
             if (!isOpen) return;
             const menu = menuRef.current;
@@ -146,11 +167,11 @@ const toggleOpen = useCallback(() => {
             return () => cancelAnimationFrame(id);
         }, [selectedSeats.length]);
 
-        const DropdownIcon = React.memo(() => (
-            <div style={{display: "flex", justifyContent: "center"}}>
+        const DropdownIcon = () => (
+            <div style={{ display: "flex", justifyContent: "center" }}>
                 <Icon name={isOpen ? "dropdownDown" : "dropdownUp"} />
             </div>
-        ));
+        );
 
         return (
             <div className="selected-seats-dropdown">
@@ -160,15 +181,16 @@ const toggleOpen = useCallback(() => {
                         alignItems: "center",
                         justifyContent: "space-between",
                         width: "100%",
-
                         padding: "5px 5px 0 20px",
                     }}
                 >
                     <div>
-                        <div style={{fontWeight: "bold", fontSize: "1rem"}}>
+                        <div style={{ fontWeight: "bold", fontSize: "1rem" }}>
                             Danh sách ghế đã chọn ({selectedSeats.length})
                         </div>
-                        <div style={{color: "#999"}}>Chỉnh sửa vị trí ghế bên trên hoặc tại đây</div>
+                        <div style={{ color: "#999" }}>
+                            Chỉnh sửa vị trí ghế bên trên hoặc tại đây
+                        </div>
                     </div>
                     <button onClick={toggleOpen}>
                         <DropdownIcon />
@@ -187,16 +209,20 @@ const toggleOpen = useCallback(() => {
                     <ul className="seat-list" ref={listRef}>
                         {selectedSeats.map((seat) => (
                             <li key={seat.seatId} data-id={seat.seatId} className="seat-card">
-                                <div className="seat-box" style={{backgroundColor: seat.color}}>
+                                <div className="seat-box" style={{ backgroundColor: seat.color }}>
                                     <span className="seat-text">Ghế {seat.code}</span>
                                     <span className="seat-price">
-                                        {(typeof seat.price === "string"
-                                            ? parseInt(seat.price)
-                                            : seat.price
+                                        {(
+                                            typeof seat.price === "string"
+                                                ? parseInt(seat.price)
+                                                : seat.price
                                         ).toLocaleString()}{" "}
                                         VND
                                     </span>
-                                    <button className="remove-btn" onClick={() => onRemoveSeat(seat)}>
+                                    <button
+                                        className="remove-btn"
+                                        onClick={() => onRemoveSeat(seat)}
+                                    >
                                         ×
                                     </button>
                                 </div>
