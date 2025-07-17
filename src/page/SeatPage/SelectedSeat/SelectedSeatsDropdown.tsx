@@ -1,4 +1,11 @@
-import React, {forwardRef, useImperativeHandle, useState, useRef, useEffect, useCallback} from "react";
+import React, {
+    forwardRef,
+    useImperativeHandle,
+    useState,
+    useRef,
+    useEffect,
+    useCallback,
+} from "react";
 import type {SeatType} from "@/data/seat";
 import Icon from "@/assets/icons/Icon";
 
@@ -16,14 +23,18 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
     ({selectedSeatsRef, onRemoveSeat, containerRef}, ref) => {
         const [selectedSeats, setSelectedSeats] = useState<SeatType[]>([]);
         const [isOpen, setOpen] = useState(false);
+        const [isMeasuring, setMeasuring] = useState(false);
 
         const listRef = useRef<HTMLUListElement>(null);
         const menuRef = useRef<HTMLDivElement>(null);
         const positionsRef = useRef<Map<string, DOMRect>>(new Map());
 
         const updateFromRef = useCallback(() => {
-            if (!listRef.current || !selectedSeatsRef.current) return;
+            if (!listRef.current || !selectedSeatsRef.current || !containerRef.current) return;
 
+            setMeasuring(true);
+
+            // 1. Lưu vị trí cũ
             const firstPositions = new Map<string, DOMRect>();
             listRef.current.childNodes.forEach((node) => {
                 const el = node as HTMLElement;
@@ -33,11 +44,23 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             });
             positionsRef.current = firstPositions;
 
+            // 2. Cập nhật danh sách ghế
             const sorted = [...selectedSeatsRef.current].sort((a, b) =>
                 a.code.localeCompare(b.code, "vi", {numeric: true})
             );
             setSelectedSeats(sorted);
-        }, [selectedSeatsRef]);
+
+            // 3. Chờ render xong → đo chiều cao
+            requestAnimationFrame(() => {
+                const container = containerRef.current!;
+                const height = container.getBoundingClientRect().height;
+                container.style.setProperty("--dropdown-height", `${height}px`);
+
+                requestAnimationFrame(() => {
+                    setMeasuring(false); // cho phép thêm class visible/open
+                });
+            });
+        }, [selectedSeatsRef, containerRef]);
 
         useImperativeHandle(ref, () => ({updateFromRef}));
 
@@ -83,20 +106,20 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             }, 0);
         }, [selectedSeats, isOpen]);
 
-        // Gán visibility cho container
+        // Cập nhật class visible theo selectedSeats.length
         useEffect(() => {
             const container = containerRef.current;
             if (!container) return;
 
-            if (selectedSeats.length > 0) {
+            if (selectedSeats.length > 0 && !isMeasuring) {
                 container.classList.add("visible");
             } else {
                 container.classList.remove("visible");
                 setOpen(false);
             }
-        }, [selectedSeats.length]);
+        }, [selectedSeats.length, isMeasuring]);
 
-        //gán open
+        // Cập nhật class open theo state
         useEffect(() => {
             const container = containerRef.current;
             if (!container) return;
@@ -107,15 +130,15 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
                 container.classList.remove("open");
             }
         }, [isOpen]);
+
         const toggleOpen = useCallback(() => {
             if (!containerRef.current) return;
 
             if (!isOpen && selectedSeats.length === 0) return;
-
             setOpen(!isOpen);
         }, [isOpen, selectedSeats.length, containerRef]);
 
-        // Effect 1: Khi mở dropdown → đặt max-height theo scrollHeight
+        // Khi mở dropdown → đo scrollHeight và đặt max-height
         useEffect(() => {
             const menu = menuRef.current;
             if (!menu) return;
@@ -131,7 +154,7 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             return () => cancelAnimationFrame(id);
         }, [isOpen]);
 
-        // Effect 2: Khi danh sách ghế thay đổi (chỉ khi dropdown đang mở)
+        // Khi danh sách thay đổi (chỉ khi đang mở)
         useEffect(() => {
             if (!isOpen) return;
             const menu = menuRef.current;
@@ -159,7 +182,6 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
                         alignItems: "center",
                         justifyContent: "space-between",
                         width: "100%",
-
                         padding: "5px 5px 0 20px",
                     }}
                 >

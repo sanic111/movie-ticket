@@ -68,24 +68,24 @@
   z-index: 100;
   background: #fff;
   border-top: 1px solid #ddd;
+  border-radius: 8px 8px 0 0;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
 
-  transform: translateY(calc(100% - 100px)) translateZ(0);
-  opacity: 0;
-  transition: transform 300ms ease, opacity 300ms ease;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
-}
+  // Thêm biến động
+  --dropdown-height: 260px; // fallback
+  --partial-offset: 100px;
 
-.selected-seats-dropdown-container.visible {
-  opacity: 1;
-}
+  transform: translateY(var(--dropdown-height)) translateZ(0);
+  transition: transform 300ms ease;
+  will-change: transform;
 
-.selected-seats-dropdown-container.open {
-  transform: translateY(0) translateZ(0);
-  opacity: 1;
+  &.visible {
+    transform: translateY(calc(var(--dropdown-height) - var(--partial-offset))) translateZ(0);
+  }
+
+  &.open {
+    transform: translateY(0) translateZ(0);
+  }
 }
 
 
