@@ -86,8 +86,21 @@
 
 // Style riêng của dropdown ghế
 .selected-seats-dropdown {
-    &.open .dropdown-menu {
-        max-height: 200px;
+    .dropdown-menu {
+        padding: 0 0 24px 12px;
+        overflow: hidden;
+        // max-height: none;
+        transition: transform 300ms ease, opacity 300ms ease;
+        will-change: transform, opacity;
+
+        // trạng thái mở
+        transform: translateY(0);
+        opacity: 1;
+
+        &.closed {
+            transform: translateY(20px); // hoặc 100%
+            opacity: 0;
+        }
     }
 
     .dropdown-menu {
