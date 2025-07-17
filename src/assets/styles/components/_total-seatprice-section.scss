@@ -61,31 +61,33 @@
 
 // Dropdown chứa danh sách ghế
 .selected-seats-dropdown-container {
-    position: fixed;
-    left: 0;
-    bottom: 40px; /* Móc neo rất quan trọng */
-    width: 100%;
-    z-index: 100;
-    background: #fff;
-    border-top: 1px solid #ddd;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+  position: fixed;
+  left: 0;
+  bottom: 40px;
+  width: 100%;
+  z-index: 100;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 
-    transform: translateY(100%);
-    transition: transform 275ms ease;
-    will-change: transform, opacity;
+  transform: translateY(calc(100% - 100px)) translateZ(0);
+  opacity: 0;
+  transition: transform 300ms ease, opacity 300ms ease;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .selected-seats-dropdown-container.visible {
-    transform: translateY(calc(100% - 100px));
-    will-change: transform, opacity;
+  opacity: 1;
 }
 
 .selected-seats-dropdown-container.open {
-    transform: translateY(0);
-    will-change: transform, opacity;
+  transform: translateY(0) translateZ(0);
+  opacity: 1;
 }
+
 
 // Style riêng của dropdown ghế
 .selected-seats-dropdown {
