@@ -116,35 +116,7 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             setOpen(!isOpen);
         }, [isOpen, selectedSeats.length, containerRef]);
 
-        // Effect 1: Khi mở dropdown → đặt max-height theo scrollHeight
-        useEffect(() => {
-            const menu = menuRef.current;
-            if (!menu) return;
-
-            menu.style.overflow = "hidden";
-            menu.style.transition = "max-height 275ms ease";
-
-            const id = requestAnimationFrame(() => {
-                const maxHeight = isOpen ? menu.scrollHeight : 0;
-                menu.style.maxHeight = `${maxHeight}px`;
-            });
-
-            return () => cancelAnimationFrame(id);
-        }, [isOpen]);
-
-        // Effect 2: Khi danh sách ghế thay đổi (chỉ khi dropdown đang mở)
-        useEffect(() => {
-            if (!isOpen) return;
-            const menu = menuRef.current;
-            if (!menu) return;
-
-            const id = requestAnimationFrame(() => {
-                const maxHeight = menu.scrollHeight;
-                menu.style.maxHeight = `${maxHeight}px`;
-            });
-
-            return () => cancelAnimationFrame(id);
-        }, [selectedSeats.length]);
+      
 
         const DropdownIcon = React.memo(() => (
             <div style={{display: "flex", justifyContent: "center"}}>
