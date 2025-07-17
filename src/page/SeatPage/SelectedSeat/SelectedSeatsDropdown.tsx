@@ -1,11 +1,4 @@
-import React, {
-    forwardRef,
-    useImperativeHandle,
-    useState,
-    useRef,
-    useEffect,
-    useCallback,
-} from "react";
+import React, {forwardRef, useImperativeHandle, useState, useRef, useEffect, useCallback} from "react";
 import type {SeatType} from "@/data/seat";
 import Icon from "@/assets/icons/Icon";
 
@@ -23,18 +16,15 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
     ({selectedSeatsRef, onRemoveSeat, containerRef}, ref) => {
         const [selectedSeats, setSelectedSeats] = useState<SeatType[]>([]);
         const [isOpen, setOpen] = useState(false);
-        const [isMeasuring, setMeasuring] = useState(false);
+        const [isAnimating, setIsAnimating] = useState(false);
 
         const listRef = useRef<HTMLUListElement>(null);
         const menuRef = useRef<HTMLDivElement>(null);
         const positionsRef = useRef<Map<string, DOMRect>>(new Map());
 
         const updateFromRef = useCallback(() => {
-            if (!listRef.current || !selectedSeatsRef.current || !containerRef.current) return;
+            if (!listRef.current || !selectedSeatsRef.current) return;
 
-            setMeasuring(true);
-
-            // 1. Lưu vị trí cũ
             const firstPositions = new Map<string, DOMRect>();
             listRef.current.childNodes.forEach((node) => {
                 const el = node as HTMLElement;
@@ -44,23 +34,11 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             });
             positionsRef.current = firstPositions;
 
-            // 2. Cập nhật danh sách ghế
             const sorted = [...selectedSeatsRef.current].sort((a, b) =>
                 a.code.localeCompare(b.code, "vi", {numeric: true})
             );
             setSelectedSeats(sorted);
-
-            // 3. Chờ render xong → đo chiều cao
-            requestAnimationFrame(() => {
-                const container = containerRef.current!;
-                const height = container.getBoundingClientRect().height;
-                container.style.setProperty("--dropdown-height", `${height}px`);
-
-                requestAnimationFrame(() => {
-                    setMeasuring(false); // cho phép thêm class visible/open
-                });
-            });
-        }, [selectedSeatsRef, containerRef]);
+        }, [selectedSeatsRef]);
 
         useImperativeHandle(ref, () => ({updateFromRef}));
 
@@ -106,20 +84,20 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             }, 0);
         }, [selectedSeats, isOpen]);
 
-        // Cập nhật class visible theo selectedSeats.length
+        // Gán visibility cho container
         useEffect(() => {
             const container = containerRef.current;
             if (!container) return;
 
-            if (selectedSeats.length > 0 && !isMeasuring) {
+            if (selectedSeats.length > 0) {
                 container.classList.add("visible");
             } else {
                 container.classList.remove("visible");
                 setOpen(false);
             }
-        }, [selectedSeats.length, isMeasuring]);
+        }, [selectedSeats.length]);
 
-        // Cập nhật class open theo state
+        // Gán open với delay để tránh conflict
         useEffect(() => {
             const container = containerRef.current;
             if (!container) return;
@@ -127,46 +105,66 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             if (isOpen) {
                 container.classList.add("open");
             } else {
-                container.classList.remove("open");
+                // Delay để menu animation hoàn thành trước
+                const timer = setTimeout(() => {
+                    container.classList.remove("open");
+                }, 50); // Delay ngắn để menu đóng trước
+                
+                return () => clearTimeout(timer);
             }
         }, [isOpen]);
 
         const toggleOpen = useCallback(() => {
-            if (!containerRef.current) return;
+            if (!containerRef.current || isAnimating) return;
 
             if (!isOpen && selectedSeats.length === 0) return;
-            setOpen(!isOpen);
-        }, [isOpen, selectedSeats.length, containerRef]);
 
-        // Khi mở dropdown → đo scrollHeight và đặt max-height
+            setIsAnimating(true);
+            setOpen(!isOpen);
+            
+            // Reset animation state
+            setTimeout(() => {
+                setIsAnimating(false);
+            }, 300);
+        }, [isOpen, selectedSeats.length, containerRef, isAnimating]);
+
+        // Menu animation với height transition mượt mà
         useEffect(() => {
             const menu = menuRef.current;
             if (!menu) return;
 
-            menu.style.overflow = "hidden";
-            menu.style.transition = "max-height 275ms ease";
-
+            // Set transition cho tất cả properties
+            menu.style.transition = "max-height 250ms ease, opacity 250ms ease, transform 250ms ease";
+            
             const id = requestAnimationFrame(() => {
-                const maxHeight = isOpen ? menu.scrollHeight : 0;
-                menu.style.maxHeight = `${maxHeight}px`;
+                if (isOpen) {
+                    // Mở: set max-height theo scrollHeight thực tế
+                    menu.style.maxHeight = `${menu.scrollHeight}px`;
+                    menu.style.opacity = "1";
+                    menu.style.transform = "translateY(0)";
+                } else {
+                    // Đóng: co lại về 0 từ từ
+                    menu.style.maxHeight = "0px";
+                    menu.style.opacity = "0";
+                    menu.style.transform = "translateY(-10px)";
+                }
             });
 
             return () => cancelAnimationFrame(id);
         }, [isOpen]);
 
-        // Khi danh sách thay đổi (chỉ khi đang mở)
+        // Update max-height khi số lượng ghế thay đổi (chỉ khi đang mở)
         useEffect(() => {
             if (!isOpen) return;
             const menu = menuRef.current;
             if (!menu) return;
 
             const id = requestAnimationFrame(() => {
-                const maxHeight = menu.scrollHeight;
-                menu.style.maxHeight = `${maxHeight}px`;
+                menu.style.maxHeight = `${menu.scrollHeight}px`;
             });
 
             return () => cancelAnimationFrame(id);
-        }, [selectedSeats.length]);
+        }, [selectedSeats.length, isOpen]);
 
         const DropdownIcon = React.memo(() => (
             <div style={{display: "flex", justifyContent: "center"}}>
@@ -191,7 +189,7 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
                         </div>
                         <div style={{color: "#999"}}>Chỉnh sửa vị trí ghế bên trên hoặc tại đây</div>
                     </div>
-                    <button onClick={toggleOpen}>
+                    <button onClick={toggleOpen} disabled={isAnimating}>
                         <DropdownIcon />
                     </button>
                 </div>
@@ -200,9 +198,12 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
                     className="dropdown-menu"
                     ref={menuRef}
                     style={{
-                        opacity: isOpen ? 1 : 0.3,
+                        overflow: "hidden", // Luôn hidden để tránh scroll bar
                         pointerEvents: isOpen ? "auto" : "none",
-                        transition: "opacity 300ms ease",
+                        // Để CSS transition xử lý max-height
+                        maxHeight: "0px", // Default state
+                        opacity: 0, // Default state
+                        transform: "translateY(-10px)" // Default state
                     }}
                 >
                     <ul className="seat-list" ref={listRef}>

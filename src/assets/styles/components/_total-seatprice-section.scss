@@ -1,4 +1,5 @@
 @use "@styles/utils" as *;
+
 .screen-seatmap-icon-container {
     @include responsive-under(376px) {
         svg,
@@ -7,6 +8,7 @@
         }
     }
 }
+
 // Container và phần tổng giá
 .dropdown-and-price {
     margin-top: 20px;
@@ -17,7 +19,6 @@
         .empty-message {
             font-size: 14px;
             color: #999;
-
             max-width: 260px;
         }
     }
@@ -54,53 +55,60 @@
     border-top: 1px solid #ddd;
     box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
     padding-right: 5px;
-
     border-top-left-radius: $border-radius-lg;
     border-top-right-radius: $border-radius-lg;
 }
 
-// Dropdown chứa danh sách ghế
+// Dropdown chứa danh sách ghế - TỐI ƯU HÓA CHO MOBILE
 .selected-seats-dropdown-container {
-  position: fixed;
-  left: 0;
-  bottom: 40px;
-  width: 100%;
-  z-index: 100;
-  background: #fff;
-  border-top: 1px solid #ddd;
-  border-radius: 8px 8px 0 0;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-
-  // Thêm biến động
-  --dropdown-height: 260px; // fallback
-  --partial-offset: 100px;
-
-  transform: translateY(var(--dropdown-height)) translateZ(0);
-  transition: transform 300ms ease;
-  will-change: transform;
-
-  &.visible {
-    transform: translateY(calc(var(--dropdown-height) - var(--partial-offset))) translateZ(0);
-  }
-
-  &.open {
-    transform: translateY(0) translateZ(0);
-  }
+    position: fixed;
+    left: 0;
+    bottom: 40px;
+    width: 100%;
+    z-index: 100;
+    background: #fff;
+    border-top: 1px solid #ddd;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    
+    // Sử dụng transform thay vì max-height cho performance tốt hơn
+    transform: translateY(100%);
+    transition: transform 250ms cubic-bezier(0.4, 0, 0.2, 1); // Easing mượt hơn
+    will-change: transform; // Hint cho GPU acceleration
+    
+    // Tối ưu hóa rendering
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
+.selected-seats-dropdown-container.visible {
+    transform: translateY(calc(100% - 100px));
+}
+
+.selected-seats-dropdown-container.open {
+    transform: translateY(0);
+}
 
 // Style riêng của dropdown ghế
 .selected-seats-dropdown {
-    &.open .dropdown-menu {
-        max-height: 200px;
-        
-    }
-
     .dropdown-menu {
         padding: 0 0 24px 12px;
-        overflow: visible;
-        max-height: none;
-        transition: none;
+        overflow: hidden; // Luôn hidden cho animation mượt
+        
+        // Sử dụng max-height với transition mượt mà
+        max-height: 0px; // Initial state
+        opacity: 0; // Initial state
+        transform: translateY(-10px); // Initial state
+        
+        // Transition mượt mà cho tất cả properties
+        transition: max-height 250ms cubic-bezier(0.4, 0, 0.2, 1), 
+                   opacity 250ms cubic-bezier(0.4, 0, 0.2, 1),
+                   transform 250ms cubic-bezier(0.4, 0, 0.2, 1);
+        
+        // Tối ưu hóa cho mobile
+        backface-visibility: hidden;
+        transform: translateZ(0); // Force hardware acceleration
     }
 
     .seat-list {
@@ -109,6 +117,9 @@
         margin: 0;
         display: flex;
         flex-wrap: wrap;
+        
+        // Tối ưu hóa rendering
+        contain: layout style paint;
     }
 
     .seat-card {
@@ -117,6 +128,10 @@
         width: fit-content;
         transition: transform 300ms ease, opacity 300ms ease;
         will-change: transform, opacity;
+        
+        // Tối ưu hóa GPU
+        transform: translateZ(0);
+        backface-visibility: hidden;
 
         // Khi đang trong trạng thái bị remove
         &.removing {
@@ -124,10 +139,12 @@
             opacity: 0;
         }
 
-        // Hover effect nhẹ nhàng
-        &:hover {
-            transform: scale(1.02);
-            z-index: 10;
+        // Hover effect nhẹ nhàng - tắt trên mobile để tránh lag
+        @media (hover: hover) {
+            &:hover {
+                transform: scale(1.02);
+                z-index: 10;
+            }
         }
     }
 
@@ -144,6 +161,10 @@
         min-width: 105px;
         min-height: 50px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        
+        // Tối ưu hóa rendering
+        contain: layout style paint;
+        transform: translateZ(0);
     }
 
     .seat-text {
@@ -182,9 +203,21 @@
         font-weight: bold;
         color: #000;
         box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+        
+        // Tối ưu hóa cho mobile
+        touch-action: manipulation;
+        transform: translateZ(0);
 
         &:hover {
             background: #eee;
+        }
+        
+        // Tăng kích thước touch target cho mobile
+        @include responsive-under(768px) {
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            line-height: 24px;
         }
     }
 }
