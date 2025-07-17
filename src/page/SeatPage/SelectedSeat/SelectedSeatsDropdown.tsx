@@ -16,7 +16,6 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
     ({selectedSeatsRef, onRemoveSeat, containerRef}, ref) => {
         const [selectedSeats, setSelectedSeats] = useState<SeatType[]>([]);
         const [isOpen, setOpen] = useState(false);
-        const [isAnimating, setIsAnimating] = useState(false);
 
         const listRef = useRef<HTMLUListElement>(null);
         const menuRef = useRef<HTMLDivElement>(null);
@@ -97,7 +96,7 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             }
         }, [selectedSeats.length]);
 
-        // Gán open với delay để tránh conflict
+        //gán open
         useEffect(() => {
             const container = containerRef.current;
             if (!container) return;
@@ -105,66 +104,47 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             if (isOpen) {
                 container.classList.add("open");
             } else {
-                // Delay để menu animation hoàn thành trước
-                const timer = setTimeout(() => {
-                    container.classList.remove("open");
-                }, 50); // Delay ngắn để menu đóng trước
-                
-                return () => clearTimeout(timer);
+                container.classList.remove("open");
             }
         }, [isOpen]);
 
         const toggleOpen = useCallback(() => {
-            if (!containerRef.current || isAnimating) return;
+            if (!containerRef.current) return;
 
             if (!isOpen && selectedSeats.length === 0) return;
 
-            setIsAnimating(true);
             setOpen(!isOpen);
-            
-            // Reset animation state
-            setTimeout(() => {
-                setIsAnimating(false);
-            }, 300);
-        }, [isOpen, selectedSeats.length, containerRef, isAnimating]);
+        }, [isOpen, selectedSeats.length, containerRef]);
 
-        // Menu animation với height transition mượt mà
+        // Effect 1: Khi mở dropdown → đặt max-height theo scrollHeight
         useEffect(() => {
             const menu = menuRef.current;
             if (!menu) return;
 
-            // Set transition cho tất cả properties
-            menu.style.transition = "max-height 250ms ease, opacity 250ms ease, transform 250ms ease";
-            
+            menu.style.overflow = "hidden";
+            menu.style.transition = "max-height 275ms ease";
+
             const id = requestAnimationFrame(() => {
-                if (isOpen) {
-                    // Mở: set max-height theo scrollHeight thực tế
-                    menu.style.maxHeight = `${menu.scrollHeight}px`;
-                    menu.style.opacity = "1";
-                    menu.style.transform = "translateY(0)";
-                } else {
-                    // Đóng: co lại về 0 từ từ
-                    menu.style.maxHeight = "0px";
-                    menu.style.opacity = "0";
-                    menu.style.transform = "translateY(-10px)";
-                }
+                const maxHeight = isOpen ? menu.scrollHeight : 0;
+                menu.style.maxHeight = `${maxHeight}px`;
             });
 
             return () => cancelAnimationFrame(id);
         }, [isOpen]);
 
-        // Update max-height khi số lượng ghế thay đổi (chỉ khi đang mở)
+        // Effect 2: Khi danh sách ghế thay đổi (chỉ khi dropdown đang mở)
         useEffect(() => {
             if (!isOpen) return;
             const menu = menuRef.current;
             if (!menu) return;
 
             const id = requestAnimationFrame(() => {
-                menu.style.maxHeight = `${menu.scrollHeight}px`;
+                const maxHeight = menu.scrollHeight;
+                menu.style.maxHeight = `${maxHeight}px`;
             });
 
             return () => cancelAnimationFrame(id);
-        }, [selectedSeats.length, isOpen]);
+        }, [selectedSeats.length]);
 
         const DropdownIcon = React.memo(() => (
             <div style={{display: "flex", justifyContent: "center"}}>
@@ -189,7 +169,7 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
                         </div>
                         <div style={{color: "#999"}}>Chỉnh sửa vị trí ghế bên trên hoặc tại đây</div>
                     </div>
-                    <button onClick={toggleOpen} disabled={isAnimating}>
+                    <button onClick={toggleOpen}>
                         <DropdownIcon />
                     </button>
                 </div>
@@ -198,12 +178,8 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
                     className="dropdown-menu"
                     ref={menuRef}
                     style={{
-                        overflow: "hidden", // Luôn hidden để tránh scroll bar
-                        pointerEvents: isOpen ? "auto" : "none",
-                        // Để CSS transition xử lý max-height
-                        maxHeight: "0px", // Default state
-                        opacity: 0, // Default state
-                        transform: "translateY(-10px)" // Default state
+                        opacity: 1,
+                        pointerEvents: "auto",
                     }}
                 >
                     <ul className="seat-list" ref={listRef}>
