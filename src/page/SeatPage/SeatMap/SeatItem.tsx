@@ -20,9 +20,17 @@ const SeatItem = forwardRef<SeatItemHandle, SeatItemProps>(({seat, onSeatClick},
     useImperativeHandle(ref, () => ({
         deselect: () => setIsSelected(false),
         highlight: () => {
-            setIsHighlighted(true);
-            setTimeout(() => setIsHighlighted(false), 2000);
+            const el = document.getElementById(`seat-${seat.seatId}`);
+            if (!el) return;
+
+            el.classList.remove("seat--highlighted");
+
+            // Force reflow để trigger lại animation
+            void el.offsetWidth;
+
+            el.classList.add("seat--highlighted");
         },
+
         isSelected: () => isSelected, // Thêm hàm này
     }));
 
@@ -61,7 +69,7 @@ const SeatItem = forwardRef<SeatItemHandle, SeatItemProps>(({seat, onSeatClick},
     .join(" ");
 
     return (
-        <div className={classNames} onClick={handleClick} role="button" aria-pressed={isSelected}>
+        <div  id={`seat-${seat.seatId}`} className={classNames} onClick={handleClick} role="button" aria-pressed={isSelected}>
             <span className="seat-label">{seat.code}</span>
             {isSelected && (
                 <span className="">

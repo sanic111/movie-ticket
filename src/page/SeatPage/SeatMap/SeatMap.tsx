@@ -2,6 +2,7 @@ import React, { useRef, useImperativeHandle, forwardRef, useState } from "react"
 import type { SeatType } from "@/data/seat";
 import SeatRow from "@/page/SeatPage/SeatMap/SeatRow";
 import type { SeatItemHandle } from "./SeatItem";
+import AlertBox from "@/components/AlertBox";
 
 export interface SeatMapHandle {
   deselectSeat: (seatId: string) => void;
@@ -16,7 +17,7 @@ interface SeatMapProps {
 const SeatMap = forwardRef<SeatMapHandle, SeatMapProps>(
   ({ seatRows, onSeatClick }, ref) => {
     const seatItemRefs = useRef<Record<string, React.RefObject<SeatItemHandle>>>({});
-
+    const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const registerSeatRef = (seatId: string, seatRef: React.RefObject<SeatItemHandle>) => {
       seatItemRefs.current[seatId] = seatRef;
     };
@@ -28,8 +29,8 @@ const handleSeatClick = (seat: SeatType, selected: boolean) => {
       0
     );
     if (selectedCount >= 10) {
-      alert("Bạn chỉ được chọn tối đa 10 ghế.");
-      seatItemRefs.current[seat.seatId]?.current?.deselect();
+    setAlertMessage("Bạn chỉ được chọn tối đa 10 ghế.");
+          seatItemRefs.current[seat.seatId]?.current?.deselect();
       return;
     }
   }
@@ -50,8 +51,11 @@ const handleSeatClick = (seat: SeatType, selected: boolean) => {
       },
     }));
 
-    return (
-      <div className="seat-map">
+   return (
+      <div className="seat-map relative">
+        {alertMessage && (
+          <AlertBox message={alertMessage} onClose={() => setAlertMessage(null)} />
+        )}
         {seatRows.map((row, idx) => (
           <SeatRow
             key={idx}
@@ -64,5 +68,4 @@ const handleSeatClick = (seat: SeatType, selected: boolean) => {
     );
   }
 );
-
 export default SeatMap;

@@ -107,14 +107,13 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
                 container.classList.remove("open");
             }
         }, [isOpen]);
-const toggleOpen = useCallback(() => {
-  if (!containerRef.current) return;
+        const toggleOpen = useCallback(() => {
+            if (!containerRef.current) return;
 
-  if (!isOpen && selectedSeats.length === 0) return;
+            if (!isOpen && selectedSeats.length === 0) return;
 
-  setOpen(!isOpen);
-}, [isOpen, selectedSeats.length, containerRef]);
-
+            setOpen(!isOpen);
+        }, [isOpen, selectedSeats.length, containerRef]);
 
         // Effect 1: Khi mở dropdown → đặt max-height theo scrollHeight
         useEffect(() => {

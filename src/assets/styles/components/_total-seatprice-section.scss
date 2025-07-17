@@ -74,33 +74,24 @@
 
     transform: translateY(100%);
     transition: transform 275ms ease;
+    will-change: transform, opacity;
 }
 
 .selected-seats-dropdown-container.visible {
     transform: translateY(calc(100% - 100px));
+    will-change: transform, opacity;
 }
 
 .selected-seats-dropdown-container.open {
     transform: translateY(0);
+    will-change: transform, opacity;
 }
 
 // Style riêng của dropdown ghế
 .selected-seats-dropdown {
-    .dropdown-menu {
-        padding: 0 0 24px 12px;
-        overflow: hidden;
-        // max-height: none;
-        transition: transform 300ms ease, opacity 300ms ease;
-        will-change: transform, opacity;
-
-        // trạng thái mở
-        transform: translateY(0);
-        opacity: 1;
-
-        &.closed {
-            transform: translateY(20px); // hoặc 100%
-            opacity: 0;
-        }
+    &.open .dropdown-menu {
+        max-height: 200px;
+        
     }
 
     .dropdown-menu {
