@@ -15,11 +15,12 @@ interface SeatItemProps {
 
 const SeatItem = forwardRef<SeatItemHandle, SeatItemProps>(({seat, onSeatClick}, ref) => {
     const [isSelected, setIsSelected] = useState(seat.isSelected || false);
-
+    const [highlightId, setHighlightId] = useState(0);
     useImperativeHandle(ref, () => ({
         deselect: () => setIsSelected(false),
 
         highlight: () => {
+            setHighlightId((id) => id + 1); // buộc thay đổi
             const el = document.getElementById(`seat-${seat.seatId}`);
             if (!el) return;
 
@@ -67,7 +68,8 @@ const SeatItem = forwardRef<SeatItemHandle, SeatItemProps>(({seat, onSeatClick},
     return (
         <div
             id={`seat-${seat.seatId}`}
-            className={classNames}
+            data-highlight-id={highlightId}
+            className={classNames + (highlightId ? " seat--highlighted" : "")}
             onClick={handleClick}
             role="button"
             aria-pressed={isSelected}
