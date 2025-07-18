@@ -23,15 +23,9 @@ const SeatItem = forwardRef<SeatItemHandle, SeatItemProps>(({seat, onSeatClick},
             const el = document.getElementById(`seat-${seat.seatId}`);
             if (!el) return;
 
-            // Clone node
-            const newEl = el.cloneNode(true) as HTMLElement;
-            el.replaceWith(newEl);
-
-            // Add lại class để trigger animation
-            newEl.classList.add("seat--highlighted");
-
-            // Gắn lại event listener nếu cần (nếu element có click)
-            newEl.onclick = handleClick;
+            el.classList.remove("seat--highlighted"); // remove nếu đang có
+            void el.offsetWidth; // force reflow
+            el.classList.add("seat--highlighted"); // add lại class trigger keyframe
         },
 
         isSelected: () => isSelected,
