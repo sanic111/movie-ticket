@@ -36,10 +36,28 @@ const SeatMapZoom = forwardRef<SeatMapHandle, SeatMapZoomProps>(({seatRows, onSe
         return Math.hypot(dx, dy);
     };
 
+    // Hàm giới hạn vị trí translate với tâm giới hạn luôn ở (0,0) - giữa màn hình
+    const constrainTranslate = (translate: {x: number; y: number}, scale: number) => {
+        // Tâm giới hạn luôn ở (0,0) - giữa màn hình
+        // Giới hạn căn bản là 150px, nhân với scale để điều chỉnh theo zoom
+        const baseLimit = 150;
+        const limit = baseLimit * scale;
+        
+        return {
+            x: Math.max(-limit, Math.min(limit, translate.x)),
+            y: Math.max(-limit, Math.min(limit, translate.y))
+        };
+    };
+
     const applyTransform = () => {
         if (contentRef.current) {
             const {scale, translate} = transformRef.current;
-            contentRef.current.style.transform = `translate(${translate.x}px, ${translate.y}px) scale(${scale})`;
+            
+            // Áp dụng giới hạn theo tỉ lệ scale
+            const constrainedTranslate = constrainTranslate(translate, scale);
+            transformRef.current.translate = constrainedTranslate;
+            
+            contentRef.current.style.transform = `translate(${constrainedTranslate.x}px, ${constrainedTranslate.y}px) scale(${scale})`;
         }
     };
 
@@ -95,12 +113,7 @@ const SeatMapZoom = forwardRef<SeatMapHandle, SeatMapZoomProps>(({seatRows, onSe
 
                 const nextScale = Math.max(0.5, Math.min(t.scale * scaleRatio, 3));
 
-                const rect = el.getBoundingClientRect();
-                const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
-                const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
-
-                t.translate.x = centerX - ((centerX - t.translate.x) * nextScale) / t.scale;
-                t.translate.y = centerY - ((centerY - t.translate.y) * nextScale) / t.scale;
+                // Không cần điều chỉnh translate vì transformOrigin đã là center
                 t.scale = nextScale;
 
                 lastDistance.current = newDist;
@@ -140,13 +153,9 @@ const SeatMapZoom = forwardRef<SeatMapHandle, SeatMapZoomProps>(({seatRows, onSe
             lastMousePos = null;
         };
 
-        // Wheel zoom
+        // Wheel zoom - zoom về tâm với transformOrigin center
         const handleWheel = (e: WheelEvent) => {
             e.preventDefault();
-
-            const rect = el.getBoundingClientRect();
-            const mouseX = e.clientX - rect.left;
-            const mouseY = e.clientY - rect.top;
 
             const t = transformRef.current;
 
@@ -155,8 +164,7 @@ const SeatMapZoom = forwardRef<SeatMapHandle, SeatMapZoomProps>(({seatRows, onSe
 
             if (scaleNew === t.scale) return;
 
-            t.translate.x = mouseX - ((mouseX - t.translate.x) * scaleNew) / t.scale;
-            t.translate.y = mouseY - ((mouseY - t.translate.y) * scaleNew) / t.scale;
+            // Không cần điều chỉnh translate vì transformOrigin đã là center
             t.scale = scaleNew;
 
             applyTransform();
@@ -209,7 +217,7 @@ const SeatMapZoom = forwardRef<SeatMapHandle, SeatMapZoomProps>(({seatRows, onSe
                 ref={contentRef}
                 style={{
                     transform: "translate(0px, 0px) scale(1)",
-                    transformOrigin: "0 0",
+                    transformOrigin: "center center", // Đặt tâm transform ở giữa
                     willChange: "transform", // (quan trọng) Tối ưu hiệu suất trên mobile
                 }}
             >
