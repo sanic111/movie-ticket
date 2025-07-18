@@ -1,7 +1,7 @@
 import React, {useState, useImperativeHandle, forwardRef, useCallback} from "react";
 import {validateSeatSelection, type SeatType} from "@/data/seat";
 import type {SeatMapHandle} from "../SeatMap/SeatMap";
-import AlertBox from "@/components/AlertBox";
+import {useAlert} from "@/utils/AlertProvider";
 
 export interface DropdownAndPriceHandle {
     updateFromRef: () => void;
@@ -18,8 +18,7 @@ interface Props {
 const DropdownAndPrice = forwardRef<DropdownAndPriceHandle, Props>(
     ({selectedSeatsRef, seatRows, onContinue, onRemoveSeat, seatMapRef}, ref) => {
         const [seats, setSeats] = useState<SeatType[]>([]);
-        const [alertMessage, setAlertMessage] = useState<string | null>(null);
-
+        const {showAlert} = useAlert();
         const updateFromRef = useCallback(() => {
             const current = (selectedSeatsRef.current || []).slice().sort((a, b) => a.seatId.localeCompare(b.seatId));
 
@@ -46,7 +45,7 @@ const DropdownAndPrice = forwardRef<DropdownAndPriceHandle, Props>(
             const error = validateSeatSelection(seats, seatRows);
 
             if (error) {
-                setAlertMessage(typeof error === "string" ? error : error.message);
+                showAlert(typeof error === "string" ? error : error.message);
 
                 // Tìm lại danh sách ghế cần highlight
                 const highlightIds: string[] = [];
@@ -93,7 +92,6 @@ const DropdownAndPrice = forwardRef<DropdownAndPriceHandle, Props>(
 
         return (
             <div className="dropdown-and-price relative">
-                {alertMessage && <AlertBox message={alertMessage} onClose={() => setAlertMessage(null)} />}
 
                 {seats.length > 0 ? (
                     <>

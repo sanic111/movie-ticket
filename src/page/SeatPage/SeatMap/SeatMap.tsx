@@ -2,7 +2,7 @@ import React, {useRef, useImperativeHandle, forwardRef, useState} from "react";
 import type {SeatType} from "@/data/seat";
 import SeatRow from "@/page/SeatPage/SeatMap/SeatRow";
 import type {SeatItemHandle} from "./SeatItem";
-import AlertBox from "@/components/AlertBox";
+import { useAlert } from "@/utils/AlertProvider";
 
 export interface SeatMapHandle {
     deselectSeat: (seatId: string) => void;
@@ -16,10 +16,9 @@ interface SeatMapProps {
 
 const SeatMap = forwardRef<SeatMapHandle, SeatMapProps>(({seatRows, onSeatClick}, ref) => {
     const seatItemRefs = useRef<Record<string, React.RefObject<SeatItemHandle>>>({});
-    const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const [highlightQueue, setHighlightQueue] = useState<string[]>([]);
     const [currentHighlight, setCurrentHighlight] = useState<string | null>(null);
-
+  const { showAlert } = useAlert();
     const registerSeatRef = (seatId: string, seatRef: React.RefObject<SeatItemHandle>) => {
         seatItemRefs.current[seatId] = seatRef;
     };
@@ -31,7 +30,7 @@ const SeatMap = forwardRef<SeatMapHandle, SeatMapProps>(({seatRows, onSeatClick}
                 0
             );
             if (selectedCount >= 10) {
-                setAlertMessage("Bạn chỉ được chọn tối đa 10 ghế.");
+                showAlert("Bạn chỉ được chọn tối đa 10 ghế.");
                 seatItemRefs.current[seat.seatId]?.current?.deselect();
                 return;
             }
@@ -63,7 +62,6 @@ const SeatMap = forwardRef<SeatMapHandle, SeatMapProps>(({seatRows, onSeatClick}
 
     return (
         <div className="seat-map relative">
-            {alertMessage && <AlertBox message={alertMessage} onClose={() => setAlertMessage(null)} />}
             {seatRows.map((row, idx) => (
                 <SeatRow key={idx} rowData={row} onSeatClick={handleSeatClick} registerSeatRef={registerSeatRef} />
             ))}

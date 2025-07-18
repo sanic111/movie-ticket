@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { loadPromotions } from "@/service/dataService";
 import Icon from "@/assets/icons/Icon";
 import { IoMdPricetag } from "react-icons/io";
-import AlertBox from "@/components/AlertBox";
+import { useAlert } from "@/utils/AlertProvider";
 
 interface PromoSectionProps {
   onApply: (discount: number, code: string) => void;
@@ -12,7 +12,7 @@ export default function PromoSection({ onApply }: PromoSectionProps) {
   const [promos, setPromos] = useState<any[]>([]);
   const [appliedCode, setAppliedCode] = useState<string>("");
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
-
+  const { showAlert } = useAlert();
   const promoListRef = useRef<HTMLDivElement>(null);
   const promoRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -23,7 +23,7 @@ export default function PromoSection({ onApply }: PromoSectionProps) {
   const togglePromo = useCallback(
     (promo: any) => {
       if (!promo.canApply) {
-        setAlertMessage("Xem chi tiết khuyến mãi");
+        showAlert("Xem chi tiết khuyến mãi");
         return;
       }
 
@@ -42,9 +42,7 @@ export default function PromoSection({ onApply }: PromoSectionProps) {
 
   return (
     <div className="promo-section relative">
-      {alertMessage && (
-        <AlertBox message={alertMessage} onClose={() => setAlertMessage(null)} />
-      )}
+     
 
       <div className="applied-voucher">
         <label className="promo-label">MÃ GIẢM GIÁ</label>

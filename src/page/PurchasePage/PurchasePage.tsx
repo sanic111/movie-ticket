@@ -11,15 +11,14 @@ import SectionWrapper from "@/utils/SectionWrapper";
 import type { SeatType } from "@/data/seat";
 import { loadSeatMap } from "@/service/dataService";
 import PaymentSection from "./FilmContent/Payment/PaymentSection";
-import AlertBox from "@/components/AlertBox";
-
+import { useAlert } from "@/utils/AlertProvider";
 export default function PurchasePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { seats = [] } = location.state || {};
   const [seatMap, setSeatMap] = useState<any>(null);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
-
+  const { showAlert } = useAlert();
   const agreeRef = useRef<NotesAgreeSectionHandle>(null);
 
   useEffect(() => {
@@ -42,7 +41,7 @@ export default function PurchasePage() {
 
   const handleBook = () => {
     if (!agreeRef.current?.isAgree()) {
-      setAlertMessage("Bạn phải đồng ý với điều khoản!");
+      showAlert("Bạn phải đồng ý với điều khoản!");
       return;
     }
     console.log("Đặt vé với:", selectedSeats);
@@ -53,9 +52,7 @@ export default function PurchasePage() {
 
   return (
     <div className="purchase-page relative">
-      {alertMessage && (
-        <AlertBox message={alertMessage} onClose={() => setAlertMessage(null)} />
-      )}
+     
 
       <SectionWrapper>
         <FilmInfo seatMap={seatMap} />

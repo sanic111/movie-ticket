@@ -1,9 +1,11 @@
 import AppRoutes from "@/route/AppRoutes";
+import { AlertProvider } from "./utils/AlertProvider";
 function App() {
   return (
     <div>
-
-      <AppRoutes />
+      <AlertProvider>
+        <AppRoutes />
+      </AlertProvider>
     </div>
   );
 }
