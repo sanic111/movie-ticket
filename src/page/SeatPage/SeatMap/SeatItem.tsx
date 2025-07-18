@@ -15,23 +15,26 @@ interface SeatItemProps {
 
 const SeatItem = forwardRef<SeatItemHandle, SeatItemProps>(({seat, onSeatClick}, ref) => {
     const [isSelected, setIsSelected] = useState(seat.isSelected || false);
-    const [isHighlighted, setIsHighlighted] = useState(false);
 
     useImperativeHandle(ref, () => ({
         deselect: () => setIsSelected(false),
+
         highlight: () => {
             const el = document.getElementById(`seat-${seat.seatId}`);
             if (!el) return;
 
-            el.classList.remove("seat--highlighted");
+            // Clone node
+            const newEl = el.cloneNode(true) as HTMLElement;
+            el.replaceWith(newEl);
 
-            // Force reflow để trigger lại animation
-            void el.offsetWidth;
+            // Add lại class để trigger animation
+            newEl.classList.add("seat--highlighted");
 
-            el.classList.add("seat--highlighted");
+            // Gắn lại event listener nếu cần (nếu element có click)
+            newEl.onclick = handleClick;
         },
 
-        isSelected: () => isSelected, // Thêm hàm này
+        isSelected: () => isSelected,
     }));
 
     const handleClick = useCallback(() => {
@@ -63,19 +66,20 @@ const SeatItem = forwardRef<SeatItemHandle, SeatItemProps>(({seat, onSeatClick},
         `seat--type-${mapSeatTypeClass(seat.type)}`,
         !seat.isEnable && "seat--disabled",
         isSelected && "seat--selected",
-        isHighlighted && "seat--highlighted",
     ]
     .filter(Boolean)
     .join(" ");
 
     return (
-        <div  id={`seat-${seat.seatId}`} className={classNames} onClick={handleClick} role="button" aria-pressed={isSelected}>
+        <div
+            id={`seat-${seat.seatId}`}
+            className={classNames}
+            onClick={handleClick}
+            role="button"
+            aria-pressed={isSelected}
+        >
             <span className="seat-label">{seat.code}</span>
-            {isSelected && (
-                <span className="">
-                    <SeatSelectedIcon />
-                </span>
-            )}
+            {isSelected && <SeatSelectedIcon />}
         </div>
     );
 });
