@@ -18,7 +18,6 @@ const NotesAgreeSection = forwardRef<NotesAgreeSectionHandle, NotesAgreeSectionP
 
     return (
         <>
-
             <div
                 className="agree-section"
                 onClick={toggleAgree}
@@ -50,7 +49,16 @@ const NotesAgreeSection = forwardRef<NotesAgreeSectionHandle, NotesAgreeSectionP
                 </span>
 
                 <span className="agree-label">
-                    Tôi xác nhận và đồng ý với các <a className="agree-link">điều khoản & chính sách</a>
+                    Tôi xác nhận và đồng ý với các{" "}
+                    <a
+                        href="/terms-and-policy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        style={{color: "#1e4894", textDecoration: "underline"}}
+                    >
+                        điều khoản & chính sách
+                    </a>
                 </span>
             </div>
         </>

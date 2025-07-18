@@ -4,6 +4,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+   -webkit-tap-highlight-color: transparent;
 }
 
 /* Xóa margin mặc định */
@@ -40,10 +41,14 @@ a {
   text-decoration: none;
   color: inherit;
 }
-input:focus {
+input {
   outline: none;
   border: none
 }
+// input:focus {
+//   outline: none;
+//   border: none
+// }
 /* Reset thẻ form */
 input,
 button,
