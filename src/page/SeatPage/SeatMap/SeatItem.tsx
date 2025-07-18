@@ -1,83 +1,102 @@
-import React, {useCallback, useState, useImperativeHandle, forwardRef} from "react";
-import type {SeatType} from "@/data/seat";
+import React, {
+  useCallback,
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useRef,
+  useEffect
+} from "react";
+import type { SeatType } from "@/data/seat";
 import Icon from "@/assets/icons/Icon";
 
 export interface SeatItemHandle {
-    deselect: () => void;
-    highlight: () => void;
-    isSelected: () => boolean;
+  deselect: () => void;
+  highlight: () => void;
+  isSelected: () => boolean;
 }
 
 interface SeatItemProps {
-    seat: SeatType;
-    onSeatClick: (seat: SeatType, newSelected: boolean) => void;
+  seat: SeatType;
+  onSeatClick: (seat: SeatType, newSelected: boolean) => void;
 }
 
-const SeatItem = forwardRef<SeatItemHandle, SeatItemProps>(({seat, onSeatClick}, ref) => {
-    const [isSelected, setIsSelected] = useState(seat.isSelected || false);
-    const [highlightId, setHighlightId] = useState(0);
-    useImperativeHandle(ref, () => ({
-        deselect: () => setIsSelected(false),
+const SeatItem = forwardRef<SeatItemHandle, SeatItemProps>(({ seat, onSeatClick }, ref) => {
+  const [isSelected, setIsSelected] = useState(seat.isSelected || false);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
+  const [highlightId, setHighlightId] = useState(0);
+  const isMounted = useRef(false);
+  const latestSelectedRef = useRef(isSelected);
 
-        highlight: () => {
-            setHighlightId((id) => id + 1); // buộc thay đổi
-            const el = document.getElementById(`seat-${seat.seatId}`);
-            if (!el) return;
+  useImperativeHandle(ref, () => ({
+    deselect: () => {
+      setIsSelected(false);
+      latestSelectedRef.current = false;
+    },
 
-            el.classList.remove("seat--highlighted"); // remove nếu đang có
-            void el.offsetWidth; // force reflow
-            el.classList.add("seat--highlighted"); // add lại class trigger keyframe
-        },
+    highlight: () => {
+      if (!isMounted.current) return; // tránh animation lần đầu render
+      setHighlightId((prev) => prev + 1);
+      setShouldAnimate(true);
+    },
 
-        isSelected: () => isSelected,
-    }));
+    isSelected: () => latestSelectedRef.current
+  }));
 
-    const handleClick = useCallback(() => {
-        if (!seat.isEnable) return;
-        const newSelected = !isSelected;
-        setIsSelected(newSelected);
-        onSeatClick(seat, newSelected);
-    }, [isSelected, onSeatClick, seat]);
+  useEffect(() => {
+    isMounted.current = true;
+  }, []);
 
-    const mapSeatTypeClass = (type: number): string => {
-        switch (type) {
-            case 0:
-                return "normal";
-            case 1:
-                return "vip";
-            default:
-                return "unknown";
-        }
-    };
+  const handleClick = useCallback(() => {
+    if (!seat.isEnable) return;
+    const newSelected = !latestSelectedRef.current;
+    latestSelectedRef.current = newSelected;
+    setIsSelected(newSelected);
+    onSeatClick(seat, newSelected);
+  }, [onSeatClick, seat]);
 
-    const SeatSelectedIcon = () => (
-        <div style={{display: "flex", justifyContent: "center"}}>
-            <Icon name="seatSelectedPath" />
-        </div>
-    );
+  const mapSeatTypeClass = (type: number): string => {
+    switch (type) {
+      case 0: return "normal";
+      case 1: return "vip";
+      default: return "unknown";
+    }
+  };
 
-    const classNames = [
-        "seat-item",
-        `seat--type-${mapSeatTypeClass(seat.type)}`,
-        !seat.isEnable && "seat--disabled",
-        isSelected && "seat--selected",
-    ]
+  const SeatSelectedIcon = () => (
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <Icon name="seatSelectedPath" />
+    </div>
+  );
+
+  const classNames = [
+    "seat-item",
+    `seat--type-${mapSeatTypeClass(seat.type)}`,
+    !seat.isEnable && "seat--disabled",
+    isSelected && "seat--selected",
+    shouldAnimate && "seat--highlighted"
+  ]
     .filter(Boolean)
     .join(" ");
 
-    return (
-        <div
-            id={`seat-${seat.seatId}`}
-            data-highlight-id={highlightId}
-            className={classNames + (highlightId ? " seat--highlighted" : "")}
-            onClick={handleClick}
-            role="button"
-            aria-pressed={isSelected}
-        >
-            <span className="seat-label">{seat.code}</span>
-            {isSelected && <SeatSelectedIcon />}
-        </div>
-    );
+  // Reset animation class sau khi animation chạy xong
+  const handleAnimationEnd = () => {
+    setShouldAnimate(false);
+  };
+
+  return (
+    <div
+      id={`seat-${seat.seatId}`}
+      data-highlight-id={highlightId}
+      className={classNames}
+      onClick={handleClick}
+      onAnimationEnd={handleAnimationEnd}
+      role="button"
+      aria-pressed={isSelected}
+    >
+      <span className="seat-label">{seat.code}</span>
+      {isSelected && <SeatSelectedIcon />}
+    </div>
+  );
 });
 
 export default SeatItem;
