@@ -51,7 +51,7 @@ const NotesAgreeSection = forwardRef<NotesAgreeSectionHandle, NotesAgreeSectionP
                 <span className="agree-label">
                     Tôi xác nhận và đồng ý với các{" "}
                     <a
-                        href="/terms-and-policy"
+                        href="/movie-ticket/terms-and-policy"
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
