@@ -3,6 +3,7 @@ import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import MainLayout from "@/components/MainLayout";
 import SeatPage from "@/page/SeatPage/SeatPage";
 import PurchasePage from "@/page/PurchasePage/PurchasePage";
+import TermsPage from "@/page/TermsPage/TermsPage";
 // import Loader from "@/components/Loader/Loader";
 
 const router = createBrowserRouter(
@@ -26,6 +27,11 @@ const router = createBrowserRouter(
                     path: "purchase",
                     element: <PurchasePage />,
                     handle: {title: "Thanh toán vé"},
+                },
+                {
+                    path: "terms-and-policy",
+                    element: <TermsPage />,
+                    handle: {title: "Điều khoản và chính sách"},
                 },
                 // Nếu dynamic cần loader:
                 // {
