@@ -29,7 +29,7 @@ const SeatMap = forwardRef<SeatMapHandle, SeatMapProps>(({seatRows, onSeatClick}
                 (count, ref) => count + (ref.current?.isSelected() ? 1 : 0),
                 0
             );
-            if (selectedCount >= 10) {
+            if (selectedCount > 10) {
                 showAlert("Bạn chỉ được chọn tối đa 10 ghế.");
                 seatItemRefs.current[seat.seatId]?.current?.deselect();
                 return;
