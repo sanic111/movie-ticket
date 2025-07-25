@@ -1,51 +1,50 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { loadPromotions } from "@/service/dataService";
 import Icon from "@/assets/icons/Icon";
 import { IoMdPricetag } from "react-icons/io";
 import { useAlert } from "@/utils/AlertProvider";
 
 interface PromoSectionProps {
-  onApply: (discount: number, code: string) => void;
+    onApply: (discount: number, code: string) => void;
 }
 
 export default function PromoSection({ onApply }: PromoSectionProps) {
+  const { t } = useTranslation();
   const [promos, setPromos] = useState<any[]>([]);
   const [appliedCode, setAppliedCode] = useState<string>("");
-  const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const { showAlert } = useAlert();
   const promoListRef = useRef<HTMLDivElement>(null);
   const promoRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  useEffect(() => {
-    loadPromotions().then(setPromos);
-  }, []);
+    useEffect(() => {
+        loadPromotions().then(setPromos);
+    }, []);
 
   const togglePromo = useCallback(
     (promo: any) => {
       if (!promo.canApply) {
-        showAlert("Xem chi tiết khuyến mãi");
+        showAlert(t("promo.detailsRequired"));
         return;
       }
 
       if (appliedCode === promo.voucherCode) {
-        // Hủy bỏ
+        // Remove
         setAppliedCode("");
         onApply(0, "");
       } else {
-        // Áp dụng
+        // Apply
         setAppliedCode(promo.voucherCode);
         onApply(promo.discountValue, promo.voucherCode);
       }
     },
-    [appliedCode, onApply]
+    [appliedCode, onApply, t]
   );
 
   return (
     <div className="promo-section relative">
-     
-
       <div className="applied-voucher">
-        <label className="promo-label">MÃ GIẢM GIÁ</label>
+        <label className="promo-label">{t("promo.label")}</label>
         {appliedCode ? (
           <div className="promo-code">
             <span
@@ -55,9 +54,7 @@ export default function PromoSection({ onApply }: PromoSectionProps) {
                 const container = promoListRef.current;
                 if (el && container) {
                   const offset =
-                    el.offsetLeft -
-                    container.offsetWidth / 2 +
-                    el.offsetWidth / 2;
+                    el.offsetLeft - container.offsetWidth / 2 + el.offsetWidth / 2;
                   container.scrollTo({ left: offset, behavior: "smooth" });
                 }
               }}
@@ -76,7 +73,7 @@ export default function PromoSection({ onApply }: PromoSectionProps) {
         ) : (
           <div className="promo-empty">
             <IoMdPricetag />
-            <p style={{ marginLeft: "4px" }}>Nhập hoặc chọn mã</p>
+            <p style={{ marginLeft: "4px" }}>{t("promo.placeholder")}</p>
           </div>
         )}
       </div>
@@ -92,16 +89,18 @@ export default function PromoSection({ onApply }: PromoSectionProps) {
           >
             <p className="promo-title">{p.promotionTitle}</p>
             <p className={p.canApply ? "promo-desc" : "promo-unavailable"}>
-              {p.canApply ? p.information : "Chưa thỏa mãn điều kiện"}
+              {p.canApply ? p.information : t("promo.notEligible")}
             </p>
             <div className="expiry-and-option">
-              <p className="promo-expiry">HSD: {p.promotionExpiry}</p>
+              <p className="promo-expiry">
+                {t("promo.expiry")}: {p.promotionExpiry}
+              </p>
               <button className="promo-action" onClick={() => togglePromo(p)}>
                 {appliedCode === p.voucherCode
-                  ? "Hủy bỏ"
+                  ? t("promo.remove")
                   : p.canApply
-                  ? "Áp dụng"
-                  : "Chi tiết"}
+                  ? t("promo.apply")
+                  : t("promo.details")}
               </button>
             </div>
           </div>
@@ -110,3 +109,4 @@ export default function PromoSection({ onApply }: PromoSectionProps) {
     </div>
   );
 }
+

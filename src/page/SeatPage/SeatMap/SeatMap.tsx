@@ -3,6 +3,7 @@ import type {SeatType} from "@/data/seat";
 import SeatRow from "@/page/SeatPage/SeatMap/SeatRow";
 import type {SeatItemHandle} from "./SeatItem";
 import { useAlert } from "@/utils/AlertProvider";
+import { useTranslation } from "react-i18next";
 
 export interface SeatMapHandle {
     deselectSeat: (seatId: string) => void;
@@ -19,6 +20,7 @@ const SeatMap = forwardRef<SeatMapHandle, SeatMapProps>(({seatRows, onSeatClick}
     const [highlightQueue, setHighlightQueue] = useState<string[]>([]);
     const [currentHighlight, setCurrentHighlight] = useState<string | null>(null);
   const { showAlert } = useAlert();
+  const { t } = useTranslation("common");
     const registerSeatRef = (seatId: string, seatRef: React.RefObject<SeatItemHandle>) => {
         seatItemRefs.current[seatId] = seatRef;
     };
@@ -30,7 +32,8 @@ const SeatMap = forwardRef<SeatMapHandle, SeatMapProps>(({seatRows, onSeatClick}
                 0
             );
             if (selectedCount > 10) {
-                showAlert("Bạn chỉ được chọn tối đa 10 ghế.");
+                showAlert(t("seatValidation.maxTenSeats"));
+
                 seatItemRefs.current[seat.seatId]?.current?.deselect();
                 return;
             }

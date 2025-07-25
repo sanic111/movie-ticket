@@ -1,7 +1,9 @@
 import React, {useCallback, memo} from "react";
 import {useNavigate, useMatches} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 import {PiDotsThreeOutlineFill} from "react-icons/pi";
 import Icon from "@/assets/icons/Icon";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 type IconClickProps = {onClick?: () => void};
 
@@ -32,22 +34,32 @@ const Title = memo(({title}: TitleProps) => <div className="header-title">{title
 const Header: React.FC = () => {
     const navigate = useNavigate();
     const matches = useMatches();
+    const {t} = useTranslation();
 
     const handleBack = useCallback(() => {
         navigate(-1);
     }, [navigate]);
 
+    // === Lấy title từ handle.titleKey hoặc handle.title ===
     let title = "";
     for (let i = matches.length - 1; i >= 0; i--) {
-        const m = matches[i];
-        if (m.data && (m.data as any).title) {
-            title = (m.data as any).title;
+        const match = matches[i];
+        const handle = match?.handle as {title?: string; titleKey?: string};
+
+        if (handle?.titleKey) {
+            title = t(handle.titleKey);
             break;
         }
-        if (m.handle && (m.handle as any).title) {
-            title = (m.handle as any).title;
+
+        if (handle?.title) {
+            title = handle.title;
             break;
         }
+    }
+
+    // Fallback cuối cùng từ document.title nếu không có gì
+    if (!title) {
+        title = document.title;
     }
 
     return (
@@ -55,10 +67,13 @@ const Header: React.FC = () => {
             <BackIcon onClick={handleBack} />
             <div className="textAndControl">
                 <Title title={title} />
-                <div className="inlineControl">
-                    <DotsIcon />
-                    <div className="divider">|</div>
-                    <CloseIcon />
+                <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                    <LanguageSwitcher />
+                    <div className="inlineControl">
+                        <DotsIcon />
+                        <div className="divider">|</div>
+                        <CloseIcon />
+                    </div>
                 </div>
             </div>
         </div>

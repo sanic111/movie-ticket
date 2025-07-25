@@ -1,0 +1,62 @@
+{
+  "paymentInfo": "THÔNG TIN THANH TOÁN",
+  "movieTicket": "Vé xem phim",
+  "applyPromo": "Áp dụng mã giảm giá",
+  "filmInfo": "THÔNG TIN PHIM",
+  "movieName": "Tên phim",
+  "duration": "Thời lượng",
+  "showTime": "Xuất chiếu",
+  "room": "Phòng chiếu",
+  "seats": "Số ghế",
+  "cinema": "Rạp chiếu",
+  "address": "Địa chỉ",
+  "minutes": "phút",
+  "receiverInfo": "THÔNG TIN NHẬN VÉ",
+  "infoNote": "Thông tin vé sẽ được gửi tới email; mục 'Thông báo' trên ứng dụng hoặc mục 'Vé của tôi' trong dịch vụ Đặt vé xem phim",
+  "fullName": "Họ và Tên",
+  "phone": "Số điện thoại",
+  "email": "E-mail",
+  "VATIncluded": "Đã bao gồm VAT",
+  "promo": {
+    "label": "MÃ GIẢM GIÁ",
+    "placeholder": "Nhập hoặc chọn mã",
+    "remove": "Hủy bỏ",
+    "apply": "Áp dụng",
+    "details": "Chi tiết",
+    "notEligible": "Chưa đủ điều kiện",
+    "expiry": "HSD:",
+    "detailsRequired": "Xem chi tiết khuyến mãi"
+  },
+  "notes": "Lưu ý",
+  "note1": "Phim dành cho mọi lứa tuổi.",
+  "note2": "Vé đã mua không thể đổi hoặc trả lại.",
+  "note3": "Nếu không nhận được mã vé sau 30 phút kể từ thời điểm hoàn tất thanh toán, vui lòng liên hệ tổng đài CSKH *6789 để hỗ trợ.",
+  "note4": "Rạp phim không được phép phục vụ khách hàng dưới 13 tuổi cho các suất chiếu sau 22:00 và 16 tuổi cho các suất chiếu kết thúc sau 23:00.",
+  "termsAgreement": "Tôi xác nhận và đồng ý với các ",
+  "termsPolicy": "điều khoản & chính sách",
+  "bookTicket": "Đặt vé",
+  "agreeRequired": "Bạn phải đồng ý với điều khoản!",
+
+  "pages": {
+    "home": "Trang chủ",
+    "selectSeat": "Chọn ghế",
+    "payment": "Thanh toán vé",
+    "termsAndPolicy": "Điều khoản và chính sách"
+  },
+  
+  "totalPrice": "Tổng tiền vé:",
+  "selectedSeats": "Danh sách ghế đã chọn",
+  "editSeatsInstruction": "Chỉnh sửa vị trí ghế bên trên hoặc tại đây",
+  "pleaseSelectSeat": "Quý khách vui lòng chọn vị trí ghế ngồi để tiếp tục",
+  "continue": "Tiếp tục",
+  "seat": "Ghế",
+  "TT Chiếu phim Quốc gia": "TT Chiếu phim Quốc gia",
+
+
+
+  "seatValidation": {
+    "maxTenSeats": "Bạn chỉ được chọn tối đa 10 ghế.",  
+    "leaveGapInMiddle": "Không được để trống 1 ghế giữa hai ghế đã chọn.",
+    "mustPickLastSeat": "Bạn phải chọn ghế cuối hàng khi chọn ghế sát ghế cuối."
+  }
+}

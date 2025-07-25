@@ -1,0 +1,190 @@
+// Variables
+$switcher-height: 21px;
+$switcher-width: 52px; // Increased width for flags + separator
+$btn-width: 18px;
+$btn-height: 17px;
+$font-size: 12px; // Larger for flag emojis
+$border-radius: 12px;
+$btn-border-radius: 6px;
+$gap: 3px;
+$padding: 2px;
+
+// Colors
+$bg-color: rgba(255, 255, 255, 0.2);
+$bg-hover: rgba(255, 255, 255, 0.25);
+$border-color: rgba(255, 255, 255, 0.3);
+$btn-color: rgba(255, 255, 255, 0.7);
+$btn-hover-bg: rgba(255, 255, 255, 0.1);
+$btn-hover-color: white;
+$btn-active-bg: rgba(255, 255, 255, 0.9);
+$btn-active-color: #667eea;
+
+// Transitions
+$transition-fast: all 0.2s ease;
+
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: $gap;
+  padding: $padding;
+  background: $bg-color;
+  backdrop-filter: blur(10px);
+  border-radius: $border-radius;
+  border: 1px solid $border-color;
+  height: $switcher-height;
+  width: $switcher-width;
+  transition: $transition-fast;
+
+  &:hover {
+    background: $bg-hover;
+  }
+
+  .btn {
+    background: transparent;
+    border: none;
+    font-size: $font-size;
+    font-weight: 400;
+    padding: 0;
+    border-radius: $btn-border-radius;
+    cursor: pointer;
+    transition: $transition-fast;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $btn-width;
+    height: $btn-height;
+    opacity: 0.7;
+
+    // Flag emoji styling
+    line-height: 1;
+    font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+
+    &:hover {
+      background: $btn-hover-bg;
+      opacity: 1;
+    }
+
+    &.active {
+      background: $btn-active-bg;
+      color: $btn-active-color;
+      opacity: 1;
+      transform: scale(1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &:focus {
+      outline: 1px solid rgba($btn-active-color, 0.5);
+      outline-offset: 1px;
+    }
+
+    &:focus:not(:focus-visible) {
+      outline: none;
+    }
+  }
+
+  span {
+    color: $btn-color;
+    font-size: 10px;
+    font-weight: 300;
+    opacity: 0.5;
+    line-height: 1;
+  }
+
+  &.dark {
+    background: rgba(30, 30, 30, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      background: rgba(40, 40, 40, 0.9);
+    }
+
+    .btn {
+      &.active {
+        background: rgba(79, 172, 254, 0.9);
+        color: $btn-active-color;
+        box-shadow: 0 2px 8px rgba(79, 172, 254, 0.3);
+      }
+    }
+
+    span {
+      color: rgba(255, 255, 255, 0.4);
+    }
+  }
+
+  &.light {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+
+    .btn {
+      opacity: 0.6;
+
+      &:hover {
+        opacity: 0.8;
+        background: rgba(0, 0, 0, 0.05);
+      }
+
+      &.active {
+        background: rgba(255, 107, 107, 0.9);
+        color: $btn-active-color;
+        opacity: 1;
+        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+      }
+    }
+
+    span {
+      color: rgba(0, 0, 0, 0.3);
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.95);
+    }
+  }
+
+  animation: slideIn 0.3s ease-out;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .language-switcher {
+    height: #{$switcher-height - 1px};
+    width: #{$switcher-width - 4px};
+
+    .btn {
+      font-size: #{$font-size - 1px};
+      width: #{$btn-width - 1px};
+      height: #{$btn-height - 1px};
+    }
+
+    span {
+      font-size: 9px;
+    }
+  }
+}
+
+// Mixin
+@mixin language-switcher-size($height, $width, $font-size: 12px) {
+  height: $height;
+  width: $width;
+
+  .btn {
+    font-size: $font-size;
+    width: calc(($width - 12px) / 2);
+    height: $height - 4px;
+  }
+
+  span {
+    font-size: $font-size - 2px;
+  }
+}
+
+// Animation
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

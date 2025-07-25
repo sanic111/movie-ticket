@@ -2,6 +2,8 @@ import React, {useState, useImperativeHandle, forwardRef, useCallback} from "rea
 import {validateSeatSelection, type SeatType} from "@/data/seat";
 import type {SeatMapHandle} from "../SeatMap/SeatMap";
 import {useAlert} from "@/utils/AlertProvider";
+import {useTranslation} from "react-i18next";
+import {formatCurrency} from "@/utils/formatCurrency";
 
 export interface DropdownAndPriceHandle {
     updateFromRef: () => void;
@@ -19,6 +21,7 @@ const DropdownAndPrice = forwardRef<DropdownAndPriceHandle, Props>(
     ({selectedSeatsRef, seatRows, onContinue, onRemoveSeat, seatMapRef}, ref) => {
         const [seats, setSeats] = useState<SeatType[]>([]);
         const {showAlert} = useAlert();
+        const {t, i18n} = useTranslation("common");
         const updateFromRef = useCallback(() => {
             const current = (selectedSeatsRef.current || []).slice().sort((a, b) => a.seatId.localeCompare(b.seatId));
 
@@ -89,27 +92,27 @@ const DropdownAndPrice = forwardRef<DropdownAndPriceHandle, Props>(
         };
 
         const total = seats.reduce((sum, s) => sum + Number(s.price), 0);
+        const lang = i18n.language;
 
         return (
             <div className="dropdown-and-price relative">
-
                 {seats.length > 0 ? (
                     <>
                         <div className="total-price">
                             <div className="text">
-                                <div className="total">Tổng tiền vé: </div>
-                                <div className="price">{total.toLocaleString()} VND</div>
+                                <div className="total">{t("totalPrice")}</div>{" "}
+                                <div className="price">{formatCurrency(total, lang)}</div>{" "}
                             </div>
                             <button className="button active" onClick={handleContinue}>
-                                Tiếp tục
+                                {t("continue")}
                             </button>
                         </div>
                     </>
                 ) : (
                     <div className="choose-seat">
-                        <div className="empty-message">Quý khách vui lòng chọn vị trí ghế ngồi để tiếp tục</div>
+                        <div className="empty-message"> {t("pleaseSelectSeat")}</div>
                         <button className="button disabled" disabled>
-                            Tiếp tục
+                            {t("continue")}
                         </button>
                     </div>
                 )}

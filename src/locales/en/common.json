@@ -1,0 +1,72 @@
+{
+  "paymentInfo": "Payment Information",
+  "movieTicket": "Movie Ticket",
+  "applyPromo": "Apply Promo",
+  "filmInfo": "Film Information",
+  "movieName": "Movie Title",
+  "duration": "Duration",
+  "showTime": "Show Time",
+  "room": "Screen Room",
+  "seats": "Seats",
+  "cinema": "Cinema",
+  "AVATAR: DÒNG CHẢY CỦA NƯỚC": "AVATAR: THE FLOW OF WATER",
+  "192 phút": "192 Minutes",
+  "Không rõ": "Unknown",
+  "address": "Address",
+  "minutes": "minutes",
+  "receiverInfo": "Receiver Information",
+  "infoNote": "Ticket details will be sent to your email, the 'Notifications' section in the app, or 'My Tickets' in the booking service.",
+  "fullName": "Full Name",
+  "phone": "Phone Number",
+  "email": "E-mail",
+  "notes": "Notes",
+  "note1": "This movie is suitable for all ages.",
+  "note2": "Tickets once purchased are non-refundable and non-exchangeable.",
+  "note3": "If you do not receive the ticket code within 30 minutes after completing the payment, please contact our hotline *6789 for assistance.",
+  "note4": "Cinemas are not allowed to serve customers under 13 years old for screenings after 22:00 and under 16 years old for screenings ending after 23:00.",
+  "termsAgreement": "I confirm and agree to the ",
+  "termsPolicy": "terms & policies",
+  "bookTicket": "Book Ticket",
+  "agreeRequired": "You must agree to the terms!",
+  "VATIncluded": "VAT included",
+  "ticketType": {
+    "Thường": "Standard Seat"
+   
+  },
+  
+  "promo": {
+    "label": "DISCOUNT CODE",
+    "placeholder": "Enter or select a code",
+    "remove": "Cancel",
+    "apply": "Apply",
+    "details": "Details",
+    "notEligible": "Not eligible yet",
+    "expiry": "Expiry",
+    "detailsRequired": "View promotion details"
+  },
+  
+
+
+  "pages": {
+    "home": "Home",
+    "selectSeat": "Select Seat",
+    "payment": "Purchase ticket",
+    "termsAndPolicy": "Terms and Policy"
+  },
+
+  "totalPrice": "Total Ticket Price:",
+  "selectedSeats": "Selected Seats",
+  "editSeatsInstruction": "Edit seat position above or here",
+  "pleaseSelectSeat": "Please select your seat(s) to proceed",
+  "continue": "Continue",
+  "seat": "Seat",
+  "TT Chiếu phim Quốc gia": "National Cinema",
+
+
+    "seatValidation": {
+      "maxTenSeats": "You can only select up to 10 seats.",
+    "leaveGapInMiddle": "You cannot leave a gap between selected seats.",
+    "mustPickLastSeat": "You must select the last seat if you pick the one next to it."
+  }
+  
+}

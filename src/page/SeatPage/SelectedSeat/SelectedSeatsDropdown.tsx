@@ -1,6 +1,8 @@
 import React, {forwardRef, useImperativeHandle, useState, useRef, useEffect, useCallback} from "react";
 import type {SeatType} from "@/data/seat";
 import Icon from "@/assets/icons/Icon";
+import {useTranslation} from "react-i18next";
+import {formatCurrency} from "@/utils/formatCurrency";
 
 export interface SelectedSeatsDropdownHandle {
     updateFromRef: () => void;
@@ -16,7 +18,8 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
     ({selectedSeatsRef, onRemoveSeat, containerRef}, ref) => {
         const [selectedSeats, setSelectedSeats] = useState<SeatType[]>([]);
         const [isOpen, setOpen] = useState(false);
-
+        const {t, i18n} = useTranslation("common");
+        const lang = i18n.language;
         const listRef = useRef<HTMLUListElement>(null);
         const menuRef = useRef<HTMLDivElement>(null);
         const positionsRef = useRef<Map<string, DOMRect>>(new Map());
@@ -116,14 +119,11 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
             setOpen(!isOpen);
         }, [isOpen, selectedSeats.length, containerRef]);
 
-      
-
         const DropdownIcon = React.memo(() => (
             <div style={{display: "flex", justifyContent: "center"}}>
                 <Icon name={isOpen ? "dropdownDown" : "dropdownUp"} />
             </div>
         ));
-
         return (
             <div className="selected-seats-dropdown">
                 <div
@@ -137,9 +137,9 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
                 >
                     <div>
                         <div style={{fontWeight: "bold", fontSize: "1rem"}}>
-                            Danh sách ghế đã chọn ({selectedSeats.length})
+                            {t("selectedSeats")} ({selectedSeats.length}){" "}
                         </div>
-                        <div style={{color: "#999"}}>Chỉnh sửa vị trí ghế bên trên hoặc tại đây</div>
+                        <div style={{color: "#999"}}> {t("editSeatsInstruction")}</div>
                     </div>
                     <button onClick={toggleOpen}>
                         <DropdownIcon />
@@ -158,14 +158,11 @@ const SelectedSeatsDropdown = forwardRef<SelectedSeatsDropdownHandle, SelectedSe
                         {selectedSeats.map((seat) => (
                             <li key={seat.seatId} data-id={seat.seatId} className="seat-card">
                                 <div className="seat-box" style={{backgroundColor: seat.color}}>
-                                    <span className="seat-text">Ghế {seat.code}</span>
-                                    <span className="seat-price">
-                                        {(typeof seat.price === "string"
-                                            ? parseInt(seat.price)
-                                            : seat.price
-                                        ).toLocaleString()}{" "}
-                                        VND
+                                    <span className="seat-text">
+                                        {" "}
+                                        {t("seat")} {seat.code}
                                     </span>
+                                    <span className="seat-price">{formatCurrency(Number(seat.price), lang)}</span>
                                     <button className="remove-btn" onClick={() => onRemoveSeat(seat)}>
                                         ×
                                     </button>

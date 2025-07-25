@@ -1,25 +1,28 @@
 import React from "react";
+import {useTranslation} from "react-i18next";
 import seatmapRaw from "@/data/seatmap.json";
+
 function Information() {
+    const {t} = useTranslation("common");
     const cinemaName = "TT Chiếu phim Quốc gia";
     const startTime = "10:20";
     const date = "20/06/2025";
     const roomName = seatmapRaw.roomName;
     const roomNumber = roomName?.replace("Screen", "") || "—";
+
     return (
         <div className="cinema-infor">
             <div className="left-block">
-                <div>Rạp chiếu:</div>
-                <div>Xuất chiếu:</div>
-                <div>Phòng chiếu:</div>
+                <div>{t("cinema")}</div>
+                <div>{t("showTime")}</div>
+                <div>{t("room")}</div>
             </div>
             <div className="right-block">
-                <div>{cinemaName}</div>
+                <div>{t(cinemaName)}</div>
                 <div>
-                    {startTime} | {date}
+                    {t(startTime)} | {t(date)}
                 </div>
-
-                <div>{roomNumber}</div>
+                <div>{t(roomNumber)}</div>
             </div>
         </div>
     );

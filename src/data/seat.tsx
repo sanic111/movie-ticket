@@ -1,3 +1,5 @@
+import i18n from "@/i18n";
+
 export type SeatType = {
     seatId: string; //"22831385";
     status: number; //0;
@@ -116,7 +118,7 @@ export function validateSeatSelection(
           (s) => parseInt(s.arrColIndex) === idx2
         );
         return {
-          message: "Không được để trống 1 ghế giữa hai ghế đã chọn.",
+          message: i18n.t("seatValidation.leaveGapInMiddle"),
           seatIdsToHighlight: seatInMiddle ? [seatInMiddle.seatId] : [],
         };
       }
@@ -129,7 +131,7 @@ export function validateSeatSelection(
         (s) => parseInt(s.arrColIndex) === maxIdx
       );
       return {
-        message: "Bạn phải chọn ghế cuối hàng khi chọn ghế sát ghế cuối.",
+        message: i18n.t("seatValidation.mustPickLastSeat"),
         seatIdsToHighlight: seatAtEnd ? [seatAtEnd.seatId] : [],
       };
     }
