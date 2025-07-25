@@ -1,6 +1,7 @@
-import React, {useEffect, useState} from "react";
-import {useTranslation} from "react-i18next";
+import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import seatmapRaw from "@/data/seatmap.json";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 type TicketType = {
     nameVi: string;
@@ -10,7 +11,9 @@ type TicketType = {
 
 const SeatLegend: React.FC = () => {
     const [ticketTypes, setTicketTypes] = useState<TicketType[]>([]);
-    const {t} = useTranslation("common");
+    const { t, i18n } = useTranslation("common");
+    const lang = i18n.language;
+
     useEffect(() => {
         const types = seatmapRaw.ticketTypes;
         const mapped = types.map((type: any) => ({
@@ -35,11 +38,13 @@ const SeatLegend: React.FC = () => {
                                 border: "1px solid #ccc",
                             }}
                         ></div>
-                        <div style={{fontWeight: "bold", fontSize: "0.8rem"}}>
+                        <div style={{ fontWeight: "bold", fontSize: "0.8rem" }}>
                             {t(`ticketType.${type.nameVi}`, type.nameVi)}
                         </div>
                     </div>
-                    <div style={{color: "#999", fontSize: "0.75rem"}}>{type.price.toLocaleString()} đ</div>
+                    <div style={{ color: "#999", fontSize: "0.75rem" }}>
+                        {formatCurrency(type.price, lang)}
+                    </div>
                 </div>
             ))}
         </div>
